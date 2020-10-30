@@ -1,0 +1,180 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>ts-railway</title>
+	<meta name="description" content="Documentation for ts-railway">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.json" data-base=".">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="index.html" class="title">ts-railway</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+							<input type="checkbox" id="tsd-filter-only-exported" />
+							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="globals.html">Globals</a>
+				</li>
+			</ul>
+			<h1>ts-railway</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<div class="tsd-panel tsd-typography">
+				<a href="#ts-railway" id="ts-railway" style="color: inherit; text-decoration: none;">
+					<h1>ts-railway</h1>
+				</a>
+				<p><a href="https://badge.fury.io/js/ts-railway"><img src="https://badge.fury.io/js/ts-railway.svg?t=1495378566925" alt="npm version"></a>
+					<a href="https://circleci.com/gh/iyegoroff/ts-railway"><img src="https://circleci.com/gh/iyegoroff/ts-railway.svg?style=svg" alt="CircleCI"></a>
+					<a href="https://codecov.io/gh/iyegoroff/ts-railway"><img src="https://codecov.io/gh/iyegoroff/ts-railway/branch/master/graph/badge.svg?t=1520230083925" alt="codecov"></a>
+					<a href="https://github.com/plantain-00/type-coverage"><img src="https://img.shields.io/badge/dynamic/json.svg?label=type-coverage&prefix=%E2%89%A5&suffix=%&query=$.typeCoverage.atLeast&uri=https%3A%2F%2Fraw.githubusercontent.com%2Fiyegoroff%2Fts-railway%2Fmaster%2Fpackage.json" alt="Type Coverage"></a>
+					<a href="https://david-dm.org/iyegoroff/ts-railway"><img src="https://david-dm.org/iyegoroff/ts-railway.svg?t=1495378566925" alt="Dependency Status"></a>
+					<a href="https://david-dm.org/iyegoroff/ts-railway?type=dev"><img src="https://david-dm.org/iyegoroff/ts-railway/dev-status.svg" alt="devDependencies Status"></a>
+				<a href="https://www.npmjs.com/package/ts-railway"><img src="https://img.shields.io/npm/l/ts-railway.svg?t=1495378566925" alt="npm"></a></p>
+				<p>ROP flavoured Result &amp; AsyncResult types</p>
+				<a href="#getting-started" id="getting-started" style="color: inherit; text-decoration: none;">
+					<h2>Getting started</h2>
+				</a>
+				<p><code>$ npm install ts-railway --save</code></p>
+				<a href="#overview" id="overview" style="color: inherit; text-decoration: none;">
+					<h2>Overview</h2>
+				</a>
+				<a href="#result" id="result" style="color: inherit; text-decoration: none;">
+					<h3>Result</h3>
+				</a>
+				<pre><code class="language-typescript"><span class="hljs-keyword">export</span> <span class="hljs-keyword">declare</span> <span class="hljs-keyword">type</span> Result&lt;Success, Failure&gt; =
+  | {
+      <span class="hljs-keyword">readonly</span> tag: <span class="hljs-string">&#x27;success&#x27;</span>
+      <span class="hljs-keyword">readonly</span> success: Success
+    }
+  | {
+      <span class="hljs-keyword">readonly</span> tag: <span class="hljs-string">&#x27;failure&#x27;</span>
+      <span class="hljs-keyword">readonly</span> failure: Failure
+    }
+
+<span class="hljs-comment">//...</span>
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">declare</span> <span class="hljs-keyword">const</span> Result: {
+  <span class="hljs-keyword">readonly</span> success: <span class="hljs-keyword">typeof</span> createSuccess
+  <span class="hljs-keyword">readonly</span> failure: <span class="hljs-keyword">typeof</span> createFailure
+  <span class="hljs-keyword">readonly</span> map: <span class="hljs-keyword">typeof</span> map
+  <span class="hljs-keyword">readonly</span> flatMap: <span class="hljs-keyword">typeof</span> flatMap
+  <span class="hljs-keyword">readonly</span> mapError: <span class="hljs-keyword">typeof</span> mapError
+  <span class="hljs-keyword">readonly</span> flatMapError: <span class="hljs-keyword">typeof</span> flatMapError
+  <span class="hljs-keyword">readonly</span> unwrap: <span class="hljs-keyword">typeof</span> unwrap
+  <span class="hljs-keyword">readonly</span> combine: <span class="hljs-keyword">typeof</span> combine
+}</code></pre>
+				<a href="#asyncresult" id="asyncresult" style="color: inherit; text-decoration: none;">
+					<h3>AsyncResult</h3>
+				</a>
+				<pre><code class="language-typescript"><span class="hljs-keyword">export</span> <span class="hljs-keyword">type</span> AsyncResult&lt;Success, Failure&gt; = <span class="hljs-built_in">Promise</span>&lt;Result&lt;Success, Failure&gt;&gt;
+
+<span class="hljs-comment">//...</span>
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">declare</span> <span class="hljs-keyword">const</span> AsyncResult: {
+  <span class="hljs-keyword">readonly</span> map: <span class="hljs-keyword">typeof</span> map
+  <span class="hljs-keyword">readonly</span> mapAsync: <span class="hljs-keyword">typeof</span> mapAsync
+  <span class="hljs-keyword">readonly</span> flatMap: <span class="hljs-keyword">typeof</span> flatMap
+  <span class="hljs-keyword">readonly</span> mapError: <span class="hljs-keyword">typeof</span> mapError
+  <span class="hljs-keyword">readonly</span> mapErrorAsync: <span class="hljs-keyword">typeof</span> mapErrorAsync
+  <span class="hljs-keyword">readonly</span> flatMapError: <span class="hljs-keyword">typeof</span> flatMapError
+  <span class="hljs-keyword">readonly</span> unwrap: <span class="hljs-keyword">typeof</span> unwrap
+  <span class="hljs-keyword">readonly</span> combine: <span class="hljs-keyword">typeof</span> combine
+}</code></pre>
+				<a href="#credits" id="credits" style="color: inherit; text-decoration: none;">
+					<h2>Credits</h2>
+				</a>
+				<ul>
+					<li><a href="https://fsharpforfunandprofit.com/posts/recipe-part2/">Railway oriented programming</a> article by Scott Wlaschin</li>
+				</ul>
+			</div>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="globals.html"><em>Globals</em></a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_async_result_.html">&quot;async-<wbr>result&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_index_.html">&quot;index&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_result_.html">&quot;result&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_types_.html">&quot;types&quot;</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
+				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="assets/js/main.js"></script>
+</body>
+</html>
