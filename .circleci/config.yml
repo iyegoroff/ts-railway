@@ -1,0 +1,48 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/node:12.16.1
+    working_directory: ~/repo
+    steps:
+      - checkout
+
+      - run: npm i
+      - run: npm run lint
+      - run: npm run build
+      - run: npm t
+      - run: npm run coverage
+      - run: npm run type-coverage
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - dist/*
+
+  publish:
+    docker:
+      - image: circleci/node:12.16.1
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
+      - run: npm publish
+
+workflows:
+  version: 2
+  package:
+    jobs:
+      - build:
+          filters:
+            tags:
+              only: /.*/
+      - publish:
+          context: iyegoroff
+          requires:
+            - build
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: /.*/
