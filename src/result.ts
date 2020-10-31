@@ -6,19 +6,13 @@ export type Result<Success = unknown, Failure = unknown> =
   | { readonly tag: 'failure'; readonly failure: Failure }
 
 /** A success, storing a `Success` value. */
-function createSuccess<Success>(value: Success) {
-  return {
-    tag: 'success',
-    success: value
-  } as const
+function createSuccess<Success>(success: Success) {
+  return { tag: 'success', success } as const
 }
 
 /** A failure, storing a `Failure` value. */
-function createFailure<Failure>(value: Failure) {
-  return {
-    tag: 'failure',
-    failure: value
-  } as const
+function createFailure<Failure>(failure: Failure) {
+  return { tag: 'failure', failure } as const
 }
 
 /**
