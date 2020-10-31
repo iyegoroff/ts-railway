@@ -1,4 +1,4 @@
-import { SuccessCase, FailureCase, CombinedResult } from './types'
+import { SuccessOf, FailureOf, CombinedResult } from './types'
 
 /** A value that represents either a success or a failure, including an associated value in each case. */
 export type Result<Success = unknown, Failure = unknown> =
@@ -6,19 +6,19 @@ export type Result<Success = unknown, Failure = unknown> =
   | { readonly tag: 'failure'; readonly failure: Failure }
 
 /** A success, storing a `Success` value. */
-function createSuccess<Success>(value: Success): Result<Success, never> {
+function createSuccess<Success>(value: Success) {
   return {
     tag: 'success',
     success: value
-  }
+  } as const
 }
 
 /** A failure, storing a `Failure` value. */
-function createFailure<Failure>(value: Failure): Result<never, Failure> {
+function createFailure<Failure>(value: Failure) {
   return {
     tag: 'failure',
     failure: value
-  }
+  } as const
 }
 
 /**
@@ -37,9 +37,9 @@ function flatMap<
   NewResultLike extends Result<NewSuccess, NewFailure> = Result<NewSuccess, NewFailure>,
   ResultLike extends Result<Success, Failure> = Result<Success, Failure>
 >(
-  transform: (success: SuccessCase<ResultLike>) => NewResultLike,
+  transform: (success: SuccessOf<ResultLike>) => NewResultLike,
   result: ResultLike
-): Result<SuccessCase<NewResultLike>, FailureCase<NewResultLike | ResultLike>>
+): Result<SuccessOf<NewResultLike>, FailureOf<NewResultLike | ResultLike>>
 
 /**
  * Returns a closure that takes a new result, mapping any success value using the given
@@ -56,10 +56,8 @@ function flatMap<
   NewResultLike extends Result<NewSuccess, NewFailure> = Result<NewSuccess, NewFailure>,
   ResultLike extends Result<Success, Failure> = Result<Success, Failure>
 >(
-  transform: (success: SuccessCase<ResultLike>) => NewResultLike
-): (
-  result: ResultLike
-) => Result<SuccessCase<NewResultLike>, FailureCase<NewResultLike | ResultLike>>
+  transform: (success: SuccessOf<ResultLike>) => NewResultLike
+): (result: ResultLike) => Result<SuccessOf<NewResultLike>, FailureOf<NewResultLike | ResultLike>>
 
 function flatMap<NewSuccess, NewFailure, Success, Failure>(
   transform: (success: Success) => Result<NewSuccess, NewFailure>,
@@ -97,9 +95,9 @@ function map<
   Failure,
   ResultLike extends Result<Success, Failure> = Result<Success, Failure>
 >(
-  transform: (success: SuccessCase<ResultLike>) => NewSuccess,
+  transform: (success: SuccessOf<ResultLike>) => NewSuccess,
   result: ResultLike
-): Result<NewSuccess, FailureCase<ResultLike>>
+): Result<NewSuccess, FailureOf<ResultLike>>
 
 /**
  * Returns a closure that takes a new result, mapping any success value using the given
@@ -125,8 +123,8 @@ function map<
   Failure,
   ResultLike extends Result<Success, Failure> = Result<Success, Failure>
 >(
-  transform: (success: SuccessCase<ResultLike>) => NewSuccess
-): (result: ResultLike) => Result<NewSuccess, FailureCase<ResultLike>>
+  transform: (success: SuccessOf<ResultLike>) => NewSuccess
+): (result: ResultLike) => Result<NewSuccess, FailureOf<ResultLike>>
 
 function map<NewSuccess, Success, Failure>(
   transform: (success: Success) => NewSuccess,
@@ -152,9 +150,9 @@ function flatMapError<
   NewResultLike extends Result<never, NewFailure> = Result<never, NewFailure>,
   ResultLike extends Result<Success, Failure> = Result<Success, Failure>
 >(
-  transform: (failure: FailureCase<ResultLike>) => NewResultLike,
+  transform: (failure: FailureOf<ResultLike>) => NewResultLike,
   result: ResultLike
-): Result<SuccessCase<ResultLike>, FailureCase<NewResultLike>>
+): Result<SuccessOf<ResultLike>, FailureOf<NewResultLike>>
 
 /**
  * Returns a closure that takes a new result, mapping any failure value using the given
@@ -170,8 +168,8 @@ function flatMapError<
   NewResultLike extends Result<never, NewFailure> = Result<never, NewFailure>,
   ResultLike extends Result<Success, Failure> = Result<Success, Failure>
 >(
-  transform: (failure: FailureCase<ResultLike>) => NewResultLike
-): (result: ResultLike) => Result<SuccessCase<ResultLike>, FailureCase<NewResultLike>>
+  transform: (failure: FailureOf<ResultLike>) => NewResultLike
+): (result: ResultLike) => Result<SuccessOf<ResultLike>, FailureOf<NewResultLike>>
 
 function flatMapError<NewFailure, Success, Failure>(
   transform: (failure: Failure) => Result<never, NewFailure>,
@@ -211,9 +209,9 @@ function mapError<
   Failure,
   ResultLike extends Result<Success, Failure> = Result<Success, Failure>
 >(
-  transform: (failure: FailureCase<ResultLike>) => NewFailure,
+  transform: (failure: FailureOf<ResultLike>) => NewFailure,
   result: ResultLike
-): Result<SuccessCase<ResultLike>, NewFailure>
+): Result<SuccessOf<ResultLike>, NewFailure>
 
 /**
  * Returns a closure that takes a result, mapping any failure value using the given
@@ -241,8 +239,8 @@ function mapError<
   Failure,
   ResultLike extends Result<Success, Failure> = Result<Success, Failure>
 >(
-  transform: (failure: FailureCase<ResultLike>) => NewFailure
-): (result: ResultLike) => Result<SuccessCase<ResultLike>, NewFailure>
+  transform: (failure: FailureOf<ResultLike>) => NewFailure
+): (result: ResultLike) => Result<SuccessOf<ResultLike>, NewFailure>
 
 function mapError<NewFailure, Success, Failure>(
   transform: (failure: Failure) => NewFailure,
@@ -264,7 +262,7 @@ function unwrap<
   Success,
   Failure,
   ResultLike extends Result<Success, Failure> = Result<Success, Failure>
->(): (result: ResultLike) => SuccessCase<ResultLike> | FailureCase<ResultLike>
+>(): (result: ResultLike) => SuccessOf<ResultLike> | FailureOf<ResultLike>
 
 /**
  * Extracts wrapped value from result and transforms success and failure cases
@@ -279,8 +277,8 @@ function unwrap<
   UnwrapFailure,
   ResultLike extends Result<Success, Failure> = Result<Success, Failure>
 >(transform: {
-  readonly success: (val: SuccessCase<ResultLike>) => UnwrapSuccess
-  readonly failure: (val: FailureCase<ResultLike>) => UnwrapFailure
+  readonly success: (val: SuccessOf<ResultLike>) => UnwrapSuccess
+  readonly failure: (val: FailureOf<ResultLike>) => UnwrapFailure
 }): (result: ResultLike) => UnwrapSuccess | UnwrapFailure
 
 /**
@@ -296,8 +294,8 @@ function unwrap<
   UnwrapFailure,
   ResultLike extends Result<Success, Failure> = Result<Success, Failure>
 >(transform: {
-  readonly failure: (val: FailureCase<ResultLike>) => UnwrapFailure
-}): (result: ResultLike) => SuccessCase<ResultLike> | UnwrapFailure
+  readonly failure: (val: FailureOf<ResultLike>) => UnwrapFailure
+}): (result: ResultLike) => SuccessOf<ResultLike> | UnwrapFailure
 
 /**
  * Extracts wrapped value from result and transforms success case
@@ -312,8 +310,8 @@ function unwrap<
   UnwrapSuccess,
   ResultLike extends Result<Success, Failure> = Result<Success, Failure>
 >(transform: {
-  readonly success: (val: SuccessCase<ResultLike>) => UnwrapSuccess
-}): (result: ResultLike) => UnwrapSuccess | FailureCase<ResultLike>
+  readonly success: (val: SuccessOf<ResultLike>) => UnwrapSuccess
+}): (result: ResultLike) => UnwrapSuccess | FailureOf<ResultLike>
 
 function unwrap<Success, Failure, UnwrapSuccess, UnwrapFailure>(transform?: {
   readonly success?: (val: Success) => UnwrapSuccess
@@ -520,8 +518,8 @@ function combineFunMap<
 /** @hidden */
 const combineIter = <ResultLike extends Result>(
   results: readonly ResultLike[],
-  successes: ReadonlyArray<SuccessCase<ResultLike>>
-): Result<ReadonlyArray<SuccessCase<ResultLike>>, FailureCase<ResultLike>> =>
+  successes: ReadonlyArray<SuccessOf<ResultLike>>
+): Result<ReadonlyArray<SuccessOf<ResultLike>>, FailureOf<ResultLike>> =>
   results.length === 1
     ? map((success) => [...successes, success], results[0])
     : flatMap((success) => combineIter(results.slice(1), [...successes, success]), results[0])

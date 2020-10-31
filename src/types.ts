@@ -6,7 +6,7 @@ export type SomeResult<Success = unknown, Failure = unknown> =
   | AsyncResult<Success, Failure>
 
 /** Infers type of 'failure' value */
-export type FailureCase<R extends SomeResult> = R extends Promise<infer AR>
+export type FailureOf<R extends SomeResult> = R extends Promise<infer AR>
   ? AR extends Result<unknown, unknown>
     ? AR extends { readonly tag: 'failure' }
       ? AR['failure']
@@ -19,7 +19,7 @@ export type FailureCase<R extends SomeResult> = R extends Promise<infer AR>
   : never
 
 /** Infers type of 'success' value */
-export type SuccessCase<R extends SomeResult> = R extends Promise<infer AR>
+export type SuccessOf<R extends SomeResult> = R extends Promise<infer AR>
   ? AR extends Result<unknown, unknown>
     ? AR extends { readonly tag: 'success' }
       ? AR['success']
@@ -32,8 +32,8 @@ export type SuccessCase<R extends SomeResult> = R extends Promise<infer AR>
   : never
 
 export type UnwrapResult<R extends SomeResult, U = unknown> = {
-  readonly success: (success: SuccessCase<R>) => U
-  readonly failure: (failure: FailureCase<R>) => U
+  readonly success: (success: SuccessOf<R>) => U
+  readonly failure: (failure: FailureOf<R>) => U
 }
 
 export type CombinedResult<
@@ -45,12 +45,12 @@ export type CombinedResult<
     : readonly [ResultLike, ...(readonly ResultLike[])],
   Success = {
     readonly [Index in keyof Results]: Results[Index] extends ResultLike
-      ? SuccessCase<Results[Index]>
+      ? SuccessOf<Results[Index]>
       : never
   },
   Failure = {
     readonly [Index in keyof Results]: Results[Index] extends ResultLike
-      ? FailureCase<Results[Index]>
+      ? FailureOf<Results[Index]>
       : never
   }[Shape extends 'tuple' ? number : keyof Results]
 > = Exec extends 'result' ? Result<Success, Failure> : AsyncResult<Success, Failure>

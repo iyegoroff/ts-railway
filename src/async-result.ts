@@ -1,5 +1,5 @@
 import { Result } from './result'
-import { SuccessCase, FailureCase, SomeResult, CombinedResult } from './types'
+import { SuccessOf, FailureOf, SomeResult, CombinedResult } from './types'
 
 /**
  * An async value that represents either a success or a failure,
@@ -23,9 +23,9 @@ function flatMap<
   NewResultLike extends SomeResult<NewSuccess, NewFailure> = SomeResult<NewSuccess, NewFailure>,
   ResultLike extends SomeResult<Success, Failure> = SomeResult<Success, Failure>
 >(
-  transform: (success: SuccessCase<ResultLike>) => NewResultLike,
+  transform: (success: SuccessOf<ResultLike>) => NewResultLike,
   result: ResultLike
-): AsyncResult<SuccessCase<NewResultLike>, FailureCase<NewResultLike | ResultLike>>
+): AsyncResult<SuccessOf<NewResultLike>, FailureOf<NewResultLike | ResultLike>>
 
 /**
  * Returns a closure that takes a new async result, mapping any success value using the given
@@ -42,10 +42,10 @@ function flatMap<
   NewResultLike extends SomeResult<NewSuccess, NewFailure> = SomeResult<NewSuccess, NewFailure>,
   ResultLike extends SomeResult<Success, Failure> = SomeResult<Success, Failure>
 >(
-  transform: (success: SuccessCase<ResultLike>) => NewResultLike
+  transform: (success: SuccessOf<ResultLike>) => NewResultLike
 ): (
   result: ResultLike
-) => AsyncResult<SuccessCase<NewResultLike>, FailureCase<NewResultLike | ResultLike>>
+) => AsyncResult<SuccessOf<NewResultLike>, FailureOf<NewResultLike | ResultLike>>
 
 function flatMap<NewSuccess, NewFailure, Success, Failure>(
   transform: (success: Success) => SomeResult<NewSuccess, NewFailure>,
@@ -73,9 +73,9 @@ function map<
   Failure,
   ResultLike extends SomeResult<Success, Failure> = SomeResult<Success, Failure>
 >(
-  transform: (success: SuccessCase<ResultLike>) => NewSuccess,
+  transform: (success: SuccessOf<ResultLike>) => NewSuccess,
   result: ResultLike
-): AsyncResult<NewSuccess, FailureCase<ResultLike>>
+): AsyncResult<NewSuccess, FailureOf<ResultLike>>
 
 /**
  * Returns a closure that takes a new async result, mapping any success value using the given
@@ -93,8 +93,8 @@ function map<
   Failure,
   ResultLike extends SomeResult<Success, Failure> = SomeResult<Success, Failure>
 >(
-  transform: (success: SuccessCase<ResultLike>) => NewSuccess
-): (result: ResultLike) => AsyncResult<NewSuccess, FailureCase<ResultLike>>
+  transform: (success: SuccessOf<ResultLike>) => NewSuccess
+): (result: ResultLike) => AsyncResult<NewSuccess, FailureOf<ResultLike>>
 
 function map<NewSuccess, Success, Failure>(
   transform: (success: Success) => NewSuccess,
@@ -121,9 +121,9 @@ function mapAsync<
   Failure,
   ResultLike extends SomeResult<Success, Failure> = SomeResult<Success, Failure>
 >(
-  transform: (success: SuccessCase<ResultLike>) => Promise<NewSuccess>,
+  transform: (success: SuccessOf<ResultLike>) => Promise<NewSuccess>,
   result: ResultLike
-): AsyncResult<NewSuccess, FailureCase<ResultLike>>
+): AsyncResult<NewSuccess, FailureOf<ResultLike>>
 
 /**
  * Returns a closure that takes a new async result, mapping any success value using the given
@@ -141,8 +141,8 @@ function mapAsync<
   Failure,
   ResultLike extends SomeResult<Success, Failure> = SomeResult<Success, Failure>
 >(
-  transform: (success: SuccessCase<ResultLike>) => Promise<NewSuccess>
-): (result: ResultLike) => AsyncResult<NewSuccess, FailureCase<ResultLike>>
+  transform: (success: SuccessOf<ResultLike>) => Promise<NewSuccess>
+): (result: ResultLike) => AsyncResult<NewSuccess, FailureOf<ResultLike>>
 
 function mapAsync<NewSuccess, Success, Failure>(
   transform: (success: Success) => Promise<NewSuccess>,
@@ -170,9 +170,9 @@ function flatMapError<
   NewResultLike extends SomeResult<never, NewFailure> = SomeResult<never, NewFailure>,
   ResultLike extends SomeResult<Success, Failure> = SomeResult<Success, Failure>
 >(
-  transform: (failure: FailureCase<ResultLike>) => NewResultLike,
+  transform: (failure: FailureOf<ResultLike>) => NewResultLike,
   result: ResultLike
-): AsyncResult<SuccessCase<ResultLike>, FailureCase<NewResultLike>>
+): AsyncResult<SuccessOf<ResultLike>, FailureOf<NewResultLike>>
 
 /**
  * Returns a closure that takes a new async result, mapping any failure value using the given
@@ -188,8 +188,8 @@ function flatMapError<
   NewResultLike extends SomeResult<never, NewFailure> = SomeResult<never, NewFailure>,
   ResultLike extends SomeResult<Success, Failure> = SomeResult<Success, Failure>
 >(
-  transform: (failure: FailureCase<ResultLike>) => NewResultLike
-): (result: ResultLike) => AsyncResult<SuccessCase<ResultLike>, FailureCase<NewResultLike>>
+  transform: (failure: FailureOf<ResultLike>) => NewResultLike
+): (result: ResultLike) => AsyncResult<SuccessOf<ResultLike>, FailureOf<NewResultLike>>
 
 function flatMapError<NewFailure, Success, Failure>(
   transform: (failure: Failure) => SomeResult<never, NewFailure>,
@@ -217,9 +217,9 @@ function mapError<
   Failure,
   ResultLike extends SomeResult<Success, Failure> = SomeResult<Success, Failure>
 >(
-  transform: (failure: FailureCase<ResultLike>) => NewFailure,
+  transform: (failure: FailureOf<ResultLike>) => NewFailure,
   result: ResultLike
-): AsyncResult<SuccessCase<ResultLike>, NewFailure>
+): AsyncResult<SuccessOf<ResultLike>, NewFailure>
 
 /**
  * Returns a closure that takes an async result, mapping any failure value using the given
@@ -237,8 +237,8 @@ function mapError<
   Failure,
   ResultLike extends SomeResult<Success, Failure> = SomeResult<Success, Failure>
 >(
-  transform: (failure: FailureCase<ResultLike>) => NewFailure
-): (result: ResultLike) => AsyncResult<SuccessCase<ResultLike>, NewFailure>
+  transform: (failure: FailureOf<ResultLike>) => NewFailure
+): (result: ResultLike) => AsyncResult<SuccessOf<ResultLike>, NewFailure>
 
 function mapError<NewFailure, Success, Failure>(
   transform: (failure: Failure) => NewFailure,
@@ -268,9 +268,9 @@ function mapErrorAsync<
   Failure,
   ResultLike extends SomeResult<Success, Failure> = SomeResult<Success, Failure>
 >(
-  transform: (failure: FailureCase<ResultLike>) => Promise<NewFailure>,
+  transform: (failure: FailureOf<ResultLike>) => Promise<NewFailure>,
   result: ResultLike
-): AsyncResult<SuccessCase<ResultLike>, NewFailure>
+): AsyncResult<SuccessOf<ResultLike>, NewFailure>
 
 /**
  * Returns a closure that takes an async result, mapping any failure value using the given
@@ -288,8 +288,8 @@ function mapErrorAsync<
   Failure,
   ResultLike extends SomeResult<Success, Failure> = SomeResult<Success, Failure>
 >(
-  transform: (failure: FailureCase<ResultLike>) => Promise<NewFailure>
-): (result: ResultLike) => AsyncResult<SuccessCase<ResultLike>, NewFailure>
+  transform: (failure: FailureOf<ResultLike>) => Promise<NewFailure>
+): (result: ResultLike) => AsyncResult<SuccessOf<ResultLike>, NewFailure>
 
 function mapErrorAsync<NewFailure, Success, Failure>(
   transform: (failure: Failure) => Promise<NewFailure>,
@@ -311,7 +311,7 @@ function unwrap<
   Success,
   Failure,
   ResultLike extends AsyncResult<Success, Failure> = AsyncResult<Success, Failure>
->(): (result: ResultLike) => Promise<SuccessCase<ResultLike> | FailureCase<ResultLike>>
+>(): (result: ResultLike) => Promise<SuccessOf<ResultLike> | FailureOf<ResultLike>>
 
 /**
  * Extracts wrapped value from async result and transforms success and failure cases
@@ -326,8 +326,8 @@ function unwrap<
   UnwrapFailure,
   ResultLike extends AsyncResult<Success, Failure> = AsyncResult<Success, Failure>
 >(transform: {
-  readonly success: (val: SuccessCase<ResultLike>) => UnwrapSuccess
-  readonly failure: (val: FailureCase<ResultLike>) => UnwrapFailure
+  readonly success: (val: SuccessOf<ResultLike>) => UnwrapSuccess
+  readonly failure: (val: FailureOf<ResultLike>) => UnwrapFailure
 }): (result: ResultLike) => Promise<UnwrapSuccess | UnwrapFailure>
 
 /**
@@ -343,8 +343,8 @@ function unwrap<
   UnwrapFailure,
   ResultLike extends AsyncResult<Success, Failure> = AsyncResult<Success, Failure>
 >(transform: {
-  readonly failure: (val: FailureCase<ResultLike>) => UnwrapFailure
-}): (result: ResultLike) => Promise<SuccessCase<ResultLike> | UnwrapFailure>
+  readonly failure: (val: FailureOf<ResultLike>) => UnwrapFailure
+}): (result: ResultLike) => Promise<SuccessOf<ResultLike> | UnwrapFailure>
 
 /**
  * Extracts wrapped value from async result and transforms success case
@@ -359,8 +359,8 @@ function unwrap<
   UnwrapSuccess,
   ResultLike extends AsyncResult<Success, Failure> = AsyncResult<Success, Failure>
 >(transform: {
-  readonly success: (val: SuccessCase<ResultLike>) => UnwrapSuccess
-}): (result: ResultLike) => Promise<UnwrapSuccess | FailureCase<ResultLike>>
+  readonly success: (val: SuccessOf<ResultLike>) => UnwrapSuccess
+}): (result: ResultLike) => Promise<UnwrapSuccess | FailureOf<ResultLike>>
 
 function unwrap<Success, Failure, UnwrapSuccess, UnwrapFailure>(transform?: {
   readonly success?: (val: Success) => UnwrapSuccess
@@ -569,8 +569,8 @@ function combineFunMap<
 /** @hidden */
 const combineIter = <ResultLike extends SomeResult>(
   results: readonly ResultLike[],
-  successes: ReadonlyArray<SuccessCase<ResultLike>>
-): SomeResult<ReadonlyArray<SuccessCase<ResultLike>>, FailureCase<ResultLike>> =>
+  successes: ReadonlyArray<SuccessOf<ResultLike>>
+): SomeResult<ReadonlyArray<SuccessOf<ResultLike>>, FailureOf<ResultLike>> =>
   results.length === 1
     ? map((success) => [...successes, success], results[0])
     : flatMap((success) => combineIter(results.slice(1), [...successes, success]), results[0])
