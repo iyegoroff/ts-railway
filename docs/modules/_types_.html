@@ -74,9 +74,9 @@
 							<h3>Type aliases</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-type-alias tsd-parent-kind-module tsd-has-type-parameter"><a href="_types_.html#combinedresult" class="tsd-kind-icon">Combined<wbr>Result</a></li>
-								<li class="tsd-kind-type-alias tsd-parent-kind-module tsd-has-type-parameter"><a href="_types_.html#failurecase" class="tsd-kind-icon">Failure<wbr>Case</a></li>
+								<li class="tsd-kind-type-alias tsd-parent-kind-module tsd-has-type-parameter"><a href="_types_.html#failureof" class="tsd-kind-icon">Failure<wbr>Of</a></li>
 								<li class="tsd-kind-type-alias tsd-parent-kind-module tsd-has-type-parameter"><a href="_types_.html#someresult" class="tsd-kind-icon">Some<wbr>Result</a></li>
-								<li class="tsd-kind-type-alias tsd-parent-kind-module tsd-has-type-parameter"><a href="_types_.html#successcase" class="tsd-kind-icon">Success<wbr>Case</a></li>
+								<li class="tsd-kind-type-alias tsd-parent-kind-module tsd-has-type-parameter"><a href="_types_.html#successof" class="tsd-kind-icon">Success<wbr>Of</a></li>
 								<li class="tsd-kind-type-alias tsd-parent-kind-module tsd-has-type-parameter"><a href="_types_.html#unwrapresult" class="tsd-kind-icon">Unwrap<wbr>Result</a></li>
 							</ul>
 						</section>
@@ -91,7 +91,7 @@
 					<div class="tsd-signature tsd-kind-icon">Combined<wbr>Result&lt;Exec, Shape, ResultLike, Results, Success, Failure&gt;<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Exec</span><span class="tsd-signature-symbol"> extends </span><span class="tsd-signature-type">"result"</span><span class="tsd-signature-symbol"> ? </span><span class="tsd-signature-type">Result</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Success</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">Failure</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> : </span><span class="tsd-signature-type">AsyncResult</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Success</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">Failure</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/iyegoroff/ts-railway/blob/3918581/src/types.ts#L39">types.ts:39</a></li>
+							<li>Defined in <a href="https://github.com/iyegoroff/ts-railway/blob/f94c536/src/types.ts#L39">types.ts:39</a></li>
 						</ul>
 					</aside>
 					<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -117,12 +117,12 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-module tsd-has-type-parameter">
-					<a name="failurecase" class="tsd-anchor"></a>
-					<h3>Failure<wbr>Case</h3>
-					<div class="tsd-signature tsd-kind-icon">Failure<wbr>Case&lt;R&gt;<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">R</span><span class="tsd-signature-symbol"> extends </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">infer </span> AR<span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> ? </span><span class="tsd-signature-type">AR</span><span class="tsd-signature-symbol"> extends </span><span class="tsd-signature-type">Result</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> ? </span><span class="tsd-signature-type">AR</span><span class="tsd-signature-symbol"> extends </span><span class="tsd-signature-symbol">{ </span>tag<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">"failure"</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> ? </span><span class="tsd-signature-type">AR</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">"failure"</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol"> : </span><span class="tsd-signature-type">never</span><span class="tsd-signature-symbol"> : </span><span class="tsd-signature-type">never</span><span class="tsd-signature-symbol"> : </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol"> extends </span><span class="tsd-signature-type">Result</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> ? </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol"> extends </span><span class="tsd-signature-symbol">{ </span>tag<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">"failure"</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> ? </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">"failure"</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol"> : </span><span class="tsd-signature-type">never</span><span class="tsd-signature-symbol"> : </span><span class="tsd-signature-type">never</span></div>
+					<a name="failureof" class="tsd-anchor"></a>
+					<h3>Failure<wbr>Of</h3>
+					<div class="tsd-signature tsd-kind-icon">Failure<wbr>Of&lt;R&gt;<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">R</span><span class="tsd-signature-symbol"> extends </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">infer </span> AR<span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> ? </span><span class="tsd-signature-type">AR</span><span class="tsd-signature-symbol"> extends </span><span class="tsd-signature-type">Result</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> ? </span><span class="tsd-signature-type">AR</span><span class="tsd-signature-symbol"> extends </span><span class="tsd-signature-symbol">{ </span>tag<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">"failure"</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> ? </span><span class="tsd-signature-type">AR</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">"failure"</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol"> : </span><span class="tsd-signature-type">never</span><span class="tsd-signature-symbol"> : </span><span class="tsd-signature-type">never</span><span class="tsd-signature-symbol"> : </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol"> extends </span><span class="tsd-signature-type">Result</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> ? </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol"> extends </span><span class="tsd-signature-symbol">{ </span>tag<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">"failure"</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> ? </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">"failure"</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol"> : </span><span class="tsd-signature-type">never</span><span class="tsd-signature-symbol"> : </span><span class="tsd-signature-type">never</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/iyegoroff/ts-railway/blob/3918581/src/types.ts#L9">types.ts:9</a></li>
+							<li>Defined in <a href="https://github.com/iyegoroff/ts-railway/blob/f94c536/src/types.ts#L9">types.ts:9</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -143,7 +143,7 @@
 					<div class="tsd-signature tsd-kind-icon">Some<wbr>Result&lt;Success, Failure&gt;<span class="tsd-signature-symbol">:</span> <a href="_result_.html#result" class="tsd-signature-type">Result</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Success</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">Failure</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><a href="_async_result_.html#asyncresult" class="tsd-signature-type">AsyncResult</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Success</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">Failure</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/iyegoroff/ts-railway/blob/3918581/src/types.ts#L4">types.ts:4</a></li>
+							<li>Defined in <a href="https://github.com/iyegoroff/ts-railway/blob/f94c536/src/types.ts#L4">types.ts:4</a></li>
 						</ul>
 					</aside>
 					<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -157,12 +157,12 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-module tsd-has-type-parameter">
-					<a name="successcase" class="tsd-anchor"></a>
-					<h3>Success<wbr>Case</h3>
-					<div class="tsd-signature tsd-kind-icon">Success<wbr>Case&lt;R&gt;<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">R</span><span class="tsd-signature-symbol"> extends </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">infer </span> AR<span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> ? </span><span class="tsd-signature-type">AR</span><span class="tsd-signature-symbol"> extends </span><span class="tsd-signature-type">Result</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> ? </span><span class="tsd-signature-type">AR</span><span class="tsd-signature-symbol"> extends </span><span class="tsd-signature-symbol">{ </span>tag<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">"success"</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> ? </span><span class="tsd-signature-type">AR</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">"success"</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol"> : </span><span class="tsd-signature-type">never</span><span class="tsd-signature-symbol"> : </span><span class="tsd-signature-type">never</span><span class="tsd-signature-symbol"> : </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol"> extends </span><span class="tsd-signature-type">Result</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> ? </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol"> extends </span><span class="tsd-signature-symbol">{ </span>tag<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">"success"</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> ? </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">"success"</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol"> : </span><span class="tsd-signature-type">never</span><span class="tsd-signature-symbol"> : </span><span class="tsd-signature-type">never</span></div>
+					<a name="successof" class="tsd-anchor"></a>
+					<h3>Success<wbr>Of</h3>
+					<div class="tsd-signature tsd-kind-icon">Success<wbr>Of&lt;R&gt;<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">R</span><span class="tsd-signature-symbol"> extends </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">infer </span> AR<span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> ? </span><span class="tsd-signature-type">AR</span><span class="tsd-signature-symbol"> extends </span><span class="tsd-signature-type">Result</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> ? </span><span class="tsd-signature-type">AR</span><span class="tsd-signature-symbol"> extends </span><span class="tsd-signature-symbol">{ </span>tag<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">"success"</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> ? </span><span class="tsd-signature-type">AR</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">"success"</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol"> : </span><span class="tsd-signature-type">never</span><span class="tsd-signature-symbol"> : </span><span class="tsd-signature-type">never</span><span class="tsd-signature-symbol"> : </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol"> extends </span><span class="tsd-signature-type">Result</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> ? </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol"> extends </span><span class="tsd-signature-symbol">{ </span>tag<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">"success"</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> ? </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">"success"</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol"> : </span><span class="tsd-signature-type">never</span><span class="tsd-signature-symbol"> : </span><span class="tsd-signature-type">never</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/iyegoroff/ts-railway/blob/3918581/src/types.ts#L22">types.ts:22</a></li>
+							<li>Defined in <a href="https://github.com/iyegoroff/ts-railway/blob/f94c536/src/types.ts#L22">types.ts:22</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -180,10 +180,10 @@
 				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-module tsd-has-type-parameter">
 					<a name="unwrapresult" class="tsd-anchor"></a>
 					<h3>Unwrap<wbr>Result</h3>
-					<div class="tsd-signature tsd-kind-icon">Unwrap<wbr>Result&lt;R, U&gt;<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>failure<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>failure<span class="tsd-signature-symbol">: </span><a href="_types_.html#failurecase" class="tsd-signature-type">FailureCase</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">U</span><span class="tsd-signature-symbol">; </span>success<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>success<span class="tsd-signature-symbol">: </span><a href="_types_.html#successcase" class="tsd-signature-type">SuccessCase</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">U</span><span class="tsd-signature-symbol"> }</span></div>
+					<div class="tsd-signature tsd-kind-icon">Unwrap<wbr>Result&lt;R, U&gt;<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>failure<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>failure<span class="tsd-signature-symbol">: </span><a href="_types_.html#failureof" class="tsd-signature-type">FailureOf</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">U</span><span class="tsd-signature-symbol">; </span>success<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>success<span class="tsd-signature-symbol">: </span><a href="_types_.html#successof" class="tsd-signature-type">SuccessOf</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">U</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/iyegoroff/ts-railway/blob/3918581/src/types.ts#L34">types.ts:34</a></li>
+							<li>Defined in <a href="https://github.com/iyegoroff/ts-railway/blob/f94c536/src/types.ts#L34">types.ts:34</a></li>
 						</ul>
 					</aside>
 					<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -199,18 +199,18 @@
 						<h4>Type declaration</h4>
 						<ul class="tsd-parameters">
 							<li class="tsd-parameter">
-								<h5><span class="tsd-flag ts-flagReadonly">Readonly</span> failure<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>failure<span class="tsd-signature-symbol">: </span><a href="_types_.html#failurecase" class="tsd-signature-type">FailureCase</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">U</span></h5>
+								<h5><span class="tsd-flag ts-flagReadonly">Readonly</span> failure<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>failure<span class="tsd-signature-symbol">: </span><a href="_types_.html#failureof" class="tsd-signature-type">FailureOf</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">U</span></h5>
 								<ul class="tsd-parameters">
 									<li class="tsd-parameter-signature">
 										<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-variable">
-											<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>failure<span class="tsd-signature-symbol">: </span><a href="_types_.html#failurecase" class="tsd-signature-type">FailureCase</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">U</span></li>
+											<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>failure<span class="tsd-signature-symbol">: </span><a href="_types_.html#failureof" class="tsd-signature-type">FailureOf</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">U</span></li>
 										</ul>
 										<ul class="tsd-descriptions">
 											<li class="tsd-description">
 												<h4 class="tsd-parameters-title">Parameters</h4>
 												<ul class="tsd-parameters">
 													<li>
-														<h5>failure: <a href="_types_.html#failurecase" class="tsd-signature-type">FailureCase</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span></h5>
+														<h5>failure: <a href="_types_.html#failureof" class="tsd-signature-type">FailureOf</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span></h5>
 													</li>
 												</ul>
 												<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">U</span></h4>
@@ -220,18 +220,18 @@
 								</ul>
 							</li>
 							<li class="tsd-parameter">
-								<h5><span class="tsd-flag ts-flagReadonly">Readonly</span> success<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>success<span class="tsd-signature-symbol">: </span><a href="_types_.html#successcase" class="tsd-signature-type">SuccessCase</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">U</span></h5>
+								<h5><span class="tsd-flag ts-flagReadonly">Readonly</span> success<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>success<span class="tsd-signature-symbol">: </span><a href="_types_.html#successof" class="tsd-signature-type">SuccessOf</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">U</span></h5>
 								<ul class="tsd-parameters">
 									<li class="tsd-parameter-signature">
 										<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-variable">
-											<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>success<span class="tsd-signature-symbol">: </span><a href="_types_.html#successcase" class="tsd-signature-type">SuccessCase</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">U</span></li>
+											<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>success<span class="tsd-signature-symbol">: </span><a href="_types_.html#successof" class="tsd-signature-type">SuccessOf</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">U</span></li>
 										</ul>
 										<ul class="tsd-descriptions">
 											<li class="tsd-description">
 												<h4 class="tsd-parameters-title">Parameters</h4>
 												<ul class="tsd-parameters">
 													<li>
-														<h5>success: <a href="_types_.html#successcase" class="tsd-signature-type">SuccessCase</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span></h5>
+														<h5>success: <a href="_types_.html#successof" class="tsd-signature-type">SuccessOf</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span></h5>
 													</li>
 												</ul>
 												<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">U</span></h4>
@@ -271,13 +271,13 @@
 						<a href="_types_.html#combinedresult" class="tsd-kind-icon">Combined<wbr>Result</a>
 					</li>
 					<li class=" tsd-kind-type-alias tsd-parent-kind-module tsd-has-type-parameter">
-						<a href="_types_.html#failurecase" class="tsd-kind-icon">Failure<wbr>Case</a>
+						<a href="_types_.html#failureof" class="tsd-kind-icon">Failure<wbr>Of</a>
 					</li>
 					<li class=" tsd-kind-type-alias tsd-parent-kind-module tsd-has-type-parameter">
 						<a href="_types_.html#someresult" class="tsd-kind-icon">Some<wbr>Result</a>
 					</li>
 					<li class=" tsd-kind-type-alias tsd-parent-kind-module tsd-has-type-parameter">
-						<a href="_types_.html#successcase" class="tsd-kind-icon">Success<wbr>Case</a>
+						<a href="_types_.html#successof" class="tsd-kind-icon">Success<wbr>Of</a>
 					</li>
 					<li class=" tsd-kind-type-alias tsd-parent-kind-module tsd-has-type-parameter">
 						<a href="_types_.html#unwrapresult" class="tsd-kind-icon">Unwrap<wbr>Result</a>
