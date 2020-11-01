@@ -1,3 +1,3 @@
 export * from './result'
 export * from './async-result'
-export { FailureOf, SomeResult, SuccessOf, UnwrapResult } from './types'
+export { FailureOf, SuccessOf, UnwrapResult, SomeResult } from './types'

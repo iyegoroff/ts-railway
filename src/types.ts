@@ -1,4 +1,4 @@
-import { Result } from './result'
+import { Result, SuccessResult, FailureResult } from './result'
 import { AsyncResult } from './async-result'
 
 export type SomeResult<Success = unknown, Failure = unknown> =
@@ -7,28 +7,20 @@ export type SomeResult<Success = unknown, Failure = unknown> =
 
 /** Infers type of 'failure' value */
 export type FailureOf<R extends SomeResult> = R extends Promise<infer AR>
-  ? AR extends Result<unknown, unknown>
-    ? AR extends { readonly tag: 'failure' }
-      ? AR['failure']
-      : never
+  ? AR extends FailureResult<infer Failure>
+    ? Failure
     : never
-  : R extends Result<unknown, unknown>
-  ? R extends { readonly tag: 'failure' }
-    ? R['failure']
-    : never
+  : R extends FailureResult<infer Failure>
+  ? Failure
   : never
 
 /** Infers type of 'success' value */
 export type SuccessOf<R extends SomeResult> = R extends Promise<infer AR>
-  ? AR extends Result<unknown, unknown>
-    ? AR extends { readonly tag: 'success' }
-      ? AR['success']
-      : never
+  ? AR extends SuccessResult<infer Success>
+    ? Success
     : never
-  : R extends Result<unknown, unknown>
-  ? R extends { readonly tag: 'success' }
-    ? R['success']
-    : never
+  : R extends SuccessResult<infer Success>
+  ? Success
   : never
 
 export type UnwrapResult<R extends SomeResult, U = unknown> = {

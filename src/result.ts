@@ -1,18 +1,21 @@
 import { SuccessOf, FailureOf, CombinedResult } from './types'
 
+export type SuccessResult<Success> = { readonly tag: 'success'; readonly success: Success }
+export type FailureResult<Failure> = { readonly tag: 'failure'; readonly failure: Failure }
+
 /** A value that represents either a success or a failure, including an associated value in each case. */
 export type Result<Success = unknown, Failure = unknown> =
-  | { readonly tag: 'success'; readonly success: Success }
-  | { readonly tag: 'failure'; readonly failure: Failure }
+  | SuccessResult<Success>
+  | FailureResult<Failure>
 
 /** A success, storing a `Success` value. */
-function createSuccess<Success>(success: Success) {
-  return { tag: 'success', success } as const
+function createSuccess<Success>(success: Success): SuccessResult<Success> {
+  return { tag: 'success', success }
 }
 
 /** A failure, storing a `Failure` value. */
-function createFailure<Failure>(failure: Failure) {
-  return { tag: 'failure', failure } as const
+function createFailure<Failure>(failure: Failure): FailureResult<Failure> {
+  return { tag: 'failure', failure }
 }
 
 /**
