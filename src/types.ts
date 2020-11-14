@@ -23,10 +23,18 @@ export type SuccessOf<R extends SomeResult> = R extends Promise<infer AR>
   ? Success
   : never
 
-export type UnwrapResult<R extends SomeResult, U = unknown> = {
-  readonly success: (success: SuccessOf<R>) => U
-  readonly failure: (failure: FailureOf<R>) => U
-}
+export type UnwrapResult<R extends SomeResult, U = unknown> = never extends FailureOf<R>
+  ? {
+      readonly success: (success: SuccessOf<R>) => U
+    }
+  : never extends SuccessOf<R>
+  ? {
+      readonly failure: (failure: FailureOf<R>) => U
+    }
+  : {
+      readonly success: (success: SuccessOf<R>) => U
+      readonly failure: (failure: FailureOf<R>) => U
+    }
 
 export type CombinedResult<
   Exec extends 'async-result' | 'result',

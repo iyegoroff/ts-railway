@@ -28,7 +28,8 @@
     "no-null/no-null": "error",
     "@typescript-eslint/ban-types": ["error", {
       "types": {
-        "null": null
+        "null": null,
+        "void": null
       }
     }],
     "@typescript-eslint/no-explicit-any": "error",
@@ -52,7 +53,9 @@
     ],
     "@typescript-eslint/promise-function-async": "off",
     "functional/functional-parameters": "off",
-    "functional/no-conditional-statement": "off",
+    "functional/no-conditional-statement": ["error", {
+      "allowReturningBranches": true
+    }],
     "functional/no-expression-statement": [
       "error",
       {
