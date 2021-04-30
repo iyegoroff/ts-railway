@@ -7,7 +7,7 @@
   "browser": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "preversion": "npm run lint -- --fix && npm run build && npm t && npm run type-coverage && betterer && typedoc && touch docs/.nojekyll",
+    "preversion": "npm run lint -- --fix && npm run build && npm t && npm run type-coverage && betterer && typedoc src/index.ts && touch docs/.nojekyll",
     "postversion": "git add . && git commit -am lint || : && git push && git push --tags",
     "build:dts": "tsc -p . -d true --emitDeclarationOnly true --removeComments false",
     "build:umd": "tsc -p . -m umd -t es5 --lib es2015 --outDir ./dist/umd",
