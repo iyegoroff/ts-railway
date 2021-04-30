@@ -16,7 +16,6 @@
   "extends": [
     "standard-with-typescript",
     "prettier",
-    "prettier/standard",
     "plugin:functional/external-recommended",
     "plugin:functional/recommended"
   ],
