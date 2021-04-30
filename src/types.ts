@@ -23,11 +23,11 @@ export type SuccessOf<R extends SomeResult> = R extends Promise<infer AR>
   ? Success
   : never
 
-export type UnwrapResult<R extends SomeResult, U = unknown> = never extends FailureOf<R>
+export type UnwrapResult<R extends SomeResult, U = unknown> = FailureOf<R> extends never
   ? {
       readonly success: (success: SuccessOf<R>) => U
     }
-  : never extends SuccessOf<R>
+  : SuccessOf<R> extends never
   ? {
       readonly failure: (failure: FailureOf<R>) => U
     }
