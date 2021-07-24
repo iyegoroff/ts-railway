@@ -274,8 +274,8 @@ function unwrap<
   UnwrapFailure,
   ResultLike extends Result<Success, Failure> = Result<Success, Failure>
 >(transform: {
-  readonly success: (val: SuccessOf<ResultLike>) => UnwrapSuccess
-  readonly failure: (val: FailureOf<ResultLike>) => UnwrapFailure
+  readonly success: (val: Success & SuccessOf<ResultLike>) => UnwrapSuccess
+  readonly failure: (val: Failure & FailureOf<ResultLike>) => UnwrapFailure
 }): (result: ResultLike) => UnwrapSuccess | UnwrapFailure
 
 /**
@@ -291,7 +291,7 @@ function unwrap<
   UnwrapFailure,
   ResultLike extends Result<Success, Failure> = Result<Success, Failure>
 >(transform: {
-  readonly failure: (val: FailureOf<ResultLike>) => UnwrapFailure
+  readonly failure: (val: Failure & FailureOf<ResultLike>) => UnwrapFailure
 }): (result: ResultLike) => SuccessOf<ResultLike> | UnwrapFailure
 
 /**
@@ -307,7 +307,7 @@ function unwrap<
   UnwrapSuccess,
   ResultLike extends Result<Success, Failure> = Result<Success, Failure>
 >(transform: {
-  readonly success: (val: SuccessOf<ResultLike>) => UnwrapSuccess
+  readonly success: (val: Success & SuccessOf<ResultLike>) => UnwrapSuccess
 }): (result: ResultLike) => UnwrapSuccess | FailureOf<ResultLike>
 
 function unwrap<Success, Failure, UnwrapSuccess, UnwrapFailure>(transform?: {
@@ -411,13 +411,19 @@ function combine<
   TupleFunResults extends readonly [FunResultLike, FunResultLike, ...(readonly FunResultLike[])],
   MapResults extends Readonly<Record<string, ResultLike>>,
   MapFunResults extends Readonly<Record<string, FunResultLike>>
->(...results: TupleResults | readonly [MapResults] | TupleFunResults | readonly [MapFunResults]) {
+>(
+  ...results:
+    | Readonly<TupleResults>
+    | readonly [MapResults]
+    | Readonly<TupleFunResults>
+    | readonly [MapFunResults]
+) {
   function isTupleFunResults(value: typeof results): value is TupleFunResults {
     return value.length > 1 && typeof value[0] === 'function'
   }
 
   function isTupleResults(
-    value: TupleResults | readonly [MapResults] | readonly [MapFunResults]
+    value: TupleResults | readonly [MapResults] | TupleFunResults | readonly [MapFunResults]
   ): value is TupleResults {
     return value.length > 1
   }

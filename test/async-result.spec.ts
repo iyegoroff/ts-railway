@@ -135,13 +135,15 @@ describe('AsyncResult', () => {
   test('unwrap', async () => {
     const ok: AsyncResult<number, string> = Promise.resolve(Result.success(1))
     const r1: Promise<string | number> = pipeable(ok).pipe(AsyncResult.unwrap()).value
-    const r2: Promise<string> = pipeable(ok).pipe(AsyncResult.unwrap({ success: (x) => `${x}` }))
-      .value
+    const r2: Promise<string> = pipeable(ok).pipe(
+      AsyncResult.unwrap({ success: (x) => `${x}` })
+    ).value
 
     const err: AsyncResult<string, number> = Promise.resolve(Result.failure(1))
     const r3: Promise<string | number> = pipeable(err).pipe(AsyncResult.unwrap()).value
-    const r4: Promise<string> = pipeable(err).pipe(AsyncResult.unwrap({ failure: (x) => `${x}` }))
-      .value
+    const r4: Promise<string> = pipeable(err).pipe(
+      AsyncResult.unwrap({ failure: (x) => `${x}` })
+    ).value
 
     expect(await r1).toEqual(1)
     expect(await r2).toEqual('1')
