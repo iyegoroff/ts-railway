@@ -326,8 +326,25 @@ function unwrap<
   UnwrapFailure,
   ResultLike extends AsyncResult<Success, Failure> = AsyncResult<Success, Failure>
 >(transform: {
-  readonly success: (val: Success & SuccessOf<ResultLike>) => UnwrapSuccess
-  readonly failure: (val: Failure & FailureOf<ResultLike>) => UnwrapFailure
+  readonly success: (val: SuccessOf<ResultLike>) => UnwrapSuccess
+  readonly failure: (val: FailureOf<ResultLike>) => UnwrapFailure
+}): (result: ResultLike) => Promise<UnwrapSuccess | UnwrapFailure>
+
+/**
+ * Extracts wrapped value from async result and transforms success and failure cases
+ *
+ * @param transform Success & failure transformers
+ * @returns A closure that takes an `AsyncResult` and returns transformed wrapped value
+ */
+function unwrap<
+  Success,
+  Failure,
+  UnwrapSuccess,
+  UnwrapFailure,
+  ResultLike extends AsyncResult<Success, Failure> = AsyncResult<Success, Failure>
+>(transform: {
+  readonly success: (val: Success) => UnwrapSuccess
+  readonly failure: (val: Failure) => UnwrapFailure
 }): (result: ResultLike) => Promise<UnwrapSuccess | UnwrapFailure>
 
 /**
@@ -343,7 +360,23 @@ function unwrap<
   UnwrapFailure,
   ResultLike extends AsyncResult<Success, Failure> = AsyncResult<Success, Failure>
 >(transform: {
-  readonly failure: (val: Failure & FailureOf<ResultLike>) => UnwrapFailure
+  readonly failure: (val: FailureOf<ResultLike>) => UnwrapFailure
+}): (result: ResultLike) => Promise<SuccessOf<ResultLike> | UnwrapFailure>
+
+/**
+ * Extracts wrapped value from async result and transforms failure case
+ * or returns success value as is
+ *
+ * @param transform Failure transformer
+ * @returns A closure that takes an `AsyncResult` and returns transformed wrapped value
+ */
+function unwrap<
+  Success,
+  Failure,
+  UnwrapFailure,
+  ResultLike extends AsyncResult<Success, Failure> = AsyncResult<Success, Failure>
+>(transform: {
+  readonly failure: (val: Failure) => UnwrapFailure
 }): (result: ResultLike) => Promise<SuccessOf<ResultLike> | UnwrapFailure>
 
 /**
@@ -359,7 +392,23 @@ function unwrap<
   UnwrapSuccess,
   ResultLike extends AsyncResult<Success, Failure> = AsyncResult<Success, Failure>
 >(transform: {
-  readonly success: (val: Success & SuccessOf<ResultLike>) => UnwrapSuccess
+  readonly success: (val: SuccessOf<ResultLike>) => UnwrapSuccess
+}): (result: ResultLike) => Promise<UnwrapSuccess | FailureOf<ResultLike>>
+
+/**
+ * Extracts wrapped value from async result and transforms success case
+ * or returns failure value as is
+ *
+ * @param transform Success transformer
+ * @returns A closure that takes an `AsyncResult` and returns transformed wrapped value
+ */
+function unwrap<
+  Success,
+  Failure,
+  UnwrapSuccess,
+  ResultLike extends AsyncResult<Success, Failure> = AsyncResult<Success, Failure>
+>(transform: {
+  readonly success: (val: Success) => UnwrapSuccess
 }): (result: ResultLike) => Promise<UnwrapSuccess | FailureOf<ResultLike>>
 
 function unwrap<Success, Failure, UnwrapSuccess, UnwrapFailure>(transform?: {

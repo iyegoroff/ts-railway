@@ -274,8 +274,25 @@ function unwrap<
   UnwrapFailure,
   ResultLike extends Result<Success, Failure> = Result<Success, Failure>
 >(transform: {
-  readonly success: (val: Success & SuccessOf<ResultLike>) => UnwrapSuccess
-  readonly failure: (val: Failure & FailureOf<ResultLike>) => UnwrapFailure
+  readonly success: (val: SuccessOf<ResultLike>) => UnwrapSuccess
+  readonly failure: (val: FailureOf<ResultLike>) => UnwrapFailure
+}): (result: ResultLike) => UnwrapSuccess | UnwrapFailure
+
+/**
+ * Extracts wrapped value from result and transforms success and failure cases
+ *
+ * @param transform Success & failure transformers
+ * @returns A closure that takes a `Result` and returns transformed wrapped value
+ */
+function unwrap<
+  Success,
+  Failure,
+  UnwrapSuccess,
+  UnwrapFailure,
+  ResultLike extends Result<Success, Failure> = Result<Success, Failure>
+>(transform: {
+  readonly success: (val: Success) => UnwrapSuccess
+  readonly failure: (val: Failure) => UnwrapFailure
 }): (result: ResultLike) => UnwrapSuccess | UnwrapFailure
 
 /**
@@ -291,7 +308,23 @@ function unwrap<
   UnwrapFailure,
   ResultLike extends Result<Success, Failure> = Result<Success, Failure>
 >(transform: {
-  readonly failure: (val: Failure & FailureOf<ResultLike>) => UnwrapFailure
+  readonly failure: (val: FailureOf<ResultLike>) => UnwrapFailure
+}): (result: ResultLike) => SuccessOf<ResultLike> | UnwrapFailure
+
+/**
+ * Extracts wrapped value from result and transforms failure case
+ * or returns success value as is
+ *
+ * @param transform Failure transformer
+ * @returns A closure that takes a `Result` and returns transformed wrapped value
+ */
+function unwrap<
+  Success,
+  Failure,
+  UnwrapFailure,
+  ResultLike extends Result<Success, Failure> = Result<Success, Failure>
+>(transform: {
+  readonly failure: (val: Failure) => UnwrapFailure
 }): (result: ResultLike) => SuccessOf<ResultLike> | UnwrapFailure
 
 /**
@@ -307,7 +340,23 @@ function unwrap<
   UnwrapSuccess,
   ResultLike extends Result<Success, Failure> = Result<Success, Failure>
 >(transform: {
-  readonly success: (val: Success & SuccessOf<ResultLike>) => UnwrapSuccess
+  readonly success: (val: SuccessOf<ResultLike>) => UnwrapSuccess
+}): (result: ResultLike) => UnwrapSuccess | FailureOf<ResultLike>
+
+/**
+ * Extracts wrapped value from result and transforms success case
+ * or returns failure value as is
+ *
+ * @param transform Success transformer
+ * @returns A closure that takes a `Result` and returns transformed wrapped value
+ */
+function unwrap<
+  Success,
+  Failure,
+  UnwrapSuccess,
+  ResultLike extends Result<Success, Failure> = Result<Success, Failure>
+>(transform: {
+  readonly success: (val: Success) => UnwrapSuccess
 }): (result: ResultLike) => UnwrapSuccess | FailureOf<ResultLike>
 
 function unwrap<Success, Failure, UnwrapSuccess, UnwrapFailure>(transform?: {
