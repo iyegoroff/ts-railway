@@ -173,7 +173,7 @@ describe('Result', () => {
     expect(combinedSuccess).toEqual(Result.success([1, { value: '!!!' }, 'test']))
   })
 
-  test('combine function array', () => {
+  test('combine function array - one argument', () => {
     const combinedFail = Result.combine(
       (x: 1) => Result.success(x),
       (x: 'fail') => Result.failure(x),
@@ -194,6 +194,25 @@ describe('Result', () => {
     expect(combinedSuccess([1, { value: '!!!' }, 'test'])).toEqual(
       Result.success([1, { value: '!!!' }, 'test'])
     )
+  })
+
+  test('combine function array - zero arguments', () => {
+    const combinedFail = Result.combine(
+      () => Result.success(1),
+      () => Result.failure('fail'),
+      () => Result.success({ value: '!!!' }),
+      () => Result.failure({ error: new Error('error') })
+    )
+
+    expect(combinedFail()).toEqual(Result.failure('fail'))
+
+    const combinedSuccess = Result.combine(
+      () => Result.success(1),
+      () => Result.success({ value: '!!!' }),
+      () => Result.success('test')
+    )
+
+    expect(combinedSuccess()).toEqual(Result.success([1, { value: '!!!' }, 'test']))
   })
 
   test('combine object', () => {
@@ -217,7 +236,7 @@ describe('Result', () => {
     )
   })
 
-  test('combine function object', () => {
+  test('combine function object - one argument', () => {
     const combinedFail = Result.combine({
       first: (x: 1) => Result.success(x),
       second: (x: 'fail') => Result.failure(x),
@@ -247,5 +266,26 @@ describe('Result', () => {
         third: 'test'
       })
     ).toEqual(Result.success({ first: 1, second: { value: '!!!' }, third: 'test' }))
+  })
+
+  test('combine function object - zero arguments', () => {
+    const combinedFail = Result.combine({
+      first: () => Result.success(1),
+      second: () => Result.failure('fail'),
+      third: () => Result.success({ value: '!!!' }),
+      fourth: () => Result.failure({ error: new Error('error') })
+    })
+
+    expect(combinedFail()).toEqual(Result.failure('fail'))
+
+    const combinedSuccess = Result.combine({
+      first: () => Result.success(1),
+      second: () => Result.success({ value: '!!!' }),
+      third: () => Result.success('test')
+    })
+
+    expect(combinedSuccess()).toEqual(
+      Result.success({ first: 1, second: { value: '!!!' }, third: 'test' })
+    )
   })
 })

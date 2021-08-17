@@ -276,7 +276,7 @@ describe('AsyncResult', () => {
     expect(await combinedSuccess).toEqual(Result.success([1, { value: '!!!' }, 'test']))
   })
 
-  test('combine function array', async () => {
+  test('combine function array - one argument', async () => {
     const combinedFail = AsyncResult.combine(
       (x: 1) => Promise.resolve(Result.success(x)),
       (x: 'fail') => Promise.resolve(Result.failure(x)),
@@ -297,6 +297,25 @@ describe('AsyncResult', () => {
     expect(await combinedSuccess([1, { value: '!!!' }, 'test'])).toEqual(
       Result.success([1, { value: '!!!' }, 'test'])
     )
+  })
+
+  test('combine function array - zero arguments', async () => {
+    const combinedFail = AsyncResult.combine(
+      () => Promise.resolve(Result.success(1)),
+      () => Promise.resolve(Result.failure('fail')),
+      () => Result.success({ value: '!!!' }),
+      () => Result.failure({ error: new Error('error') })
+    )
+
+    expect(await combinedFail()).toEqual(Result.failure('fail'))
+
+    const combinedSuccess = AsyncResult.combine(
+      () => Result.success(1),
+      () => Promise.resolve(Result.success({ value: '!!!' })),
+      () => Result.success('test')
+    )
+
+    expect(await combinedSuccess()).toEqual(Result.success([1, { value: '!!!' }, 'test']))
   })
 
   test('combine object', async () => {
@@ -320,7 +339,7 @@ describe('AsyncResult', () => {
     )
   })
 
-  test('combine function object', async () => {
+  test('combine function object - one argument', async () => {
     const combinedFail = AsyncResult.combine({
       first: (x: 1) => Result.success(x),
       second: (x: 'fail') => Result.failure(x),
@@ -350,5 +369,26 @@ describe('AsyncResult', () => {
         third: 'test'
       })
     ).toEqual(Result.success({ first: 1, second: { value: '!!!' }, third: 'test' }))
+  })
+
+  test('combine function object - zero arguments', async () => {
+    const combinedFail = AsyncResult.combine({
+      first: () => Result.success(1),
+      second: () => Result.failure('fail'),
+      third: () => Promise.resolve(Result.success({ value: '!!!' })),
+      fourth: () => Result.failure({ error: new Error('error') })
+    })
+
+    expect(await combinedFail()).toEqual(Result.failure('fail'))
+
+    const combinedSuccess = AsyncResult.combine({
+      first: () => Promise.resolve(Result.success(1)),
+      second: () => Promise.resolve(Result.success({ value: '!!!' })),
+      third: () => Promise.resolve(Result.success('test'))
+    })
+
+    expect(await combinedSuccess()).toEqual(
+      Result.success({ first: 1, second: { value: '!!!' }, third: 'test' })
+    )
   })
 })

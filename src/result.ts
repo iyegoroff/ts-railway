@@ -389,25 +389,23 @@ function combine<
 function combine<
   ResultLike extends Result,
   FunResultLike extends (arg: never) => ResultLike,
-  FunResults extends readonly [FunResultLike, FunResultLike, ...(readonly FunResultLike[])]
->(
-  ...results: FunResults
-): (
-  args: {
+  FunResults extends readonly [FunResultLike, FunResultLike, ...(readonly FunResultLike[])],
+  Args = {
     readonly [Index in keyof FunResults]: FunResults[Index] extends FunResultLike
       ? Parameters<FunResults[Index]>[0]
       : never
-  }
-) => CombinedResult<
-  'result',
-  'tuple',
-  ResultLike,
-  {
-    readonly [Index in keyof FunResults]: FunResults[Index] extends FunResultLike
-      ? ReturnType<FunResults[Index]>
-      : never
-  }
->
+  },
+  Res = CombinedResult<
+    'result',
+    'tuple',
+    ResultLike,
+    {
+      readonly [Index in keyof FunResults]: FunResults[Index] extends FunResultLike
+        ? ReturnType<FunResults[Index]>
+        : never
+    }
+  >
+>(...results: FunResults): Args extends readonly undefined[] ? () => Res : (args: Args) => Res
 
 /**
  * Combines multiple results into single one
@@ -432,26 +430,26 @@ function combine<
 function combine<
   ResultLike extends Result,
   FunResultLike extends (arg: never) => ResultLike,
-  FunResults extends Readonly<Record<string, FunResultLike>>
->(
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  ...results: {} extends FunResults ? never : readonly [FunResults]
-): (
-  arg: {
+  FunResults extends Readonly<Record<string, FunResultLike>>,
+  Arg = {
     readonly [Index in keyof FunResults]: FunResults[Index] extends FunResultLike
       ? Parameters<FunResults[Index]>[0]
       : never
-  }
-) => CombinedResult<
-  'result',
-  'map',
-  ResultLike,
-  {
-    readonly [Index in keyof FunResults]: FunResults[Index] extends FunResultLike
-      ? ReturnType<FunResults[Index]>
-      : never
-  }
->
+  },
+  Res = CombinedResult<
+    'result',
+    'map',
+    ResultLike,
+    {
+      readonly [Index in keyof FunResults]: FunResults[Index] extends FunResultLike
+        ? ReturnType<FunResults[Index]>
+        : never
+    }
+  >
+>(
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  ...results: {} extends FunResults ? never : readonly [FunResults]
+): Arg extends Record<string, undefined> ? () => Res : (arg: Arg) => Res
 
 function combine<
   ResultLike extends Result,
@@ -533,7 +531,7 @@ function combineFunTuple<
   > => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-expect-error
-    return combine(...args.map((arg, i) => funResults[i](arg)))
+    return combine(...funResults.map((fun, i) => fun((args ?? [])[i])))
   }
 }
 
@@ -563,7 +561,7 @@ function combineFunMap<
     const keys = Object.keys(funResult)
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-expect-error
-    return combine(keys.reduce((acc, key) => ({ ...acc, [key]: funResult[key](arg[key]) }), {}))
+    return combine(keys.reduce((acc, k) => ({ ...acc, [k]: funResult[k]((arg ?? {})[k]) }), {}))
   }
 }
 
