@@ -1,6 +1,6 @@
 {
   "name": "ts-railway",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "ROP flavoured Result & AsyncResult types",
   "type": "module",
   "sideEffects": false,
