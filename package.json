@@ -1,6 +1,6 @@
 {
   "name": "ts-railway",
-  "version": "3.0.3",
+  "version": "3.0.4",
   "description": "ROP flavoured Result & AsyncResult types",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
@@ -75,7 +75,10 @@
     "typescript": "^4.4.4"
   },
   "jest": {
-    "moduleFileExtensions": ["js", "ts"],
+    "moduleFileExtensions": [
+      "js",
+      "ts"
+    ],
     "testPathIgnorePatterns": [
       "blueprint-templates"
     ],
