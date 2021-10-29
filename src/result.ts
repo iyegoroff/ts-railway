@@ -513,13 +513,11 @@ function combineFunTuple<
   FunResultLike extends (arg: never) => ResultLike,
   FunResults extends readonly [FunResultLike, FunResultLike, ...(readonly FunResultLike[])]
 >(funResults: FunResults) {
-  return (
-    args: {
-      readonly [Index in keyof FunResults]: FunResults[Index] extends FunResultLike
-        ? Parameters<FunResults[Index]>[0]
-        : never
-    }
-  ): CombinedResult<
+  return (args: {
+    readonly [Index in keyof FunResults]: FunResults[Index] extends FunResultLike
+      ? Parameters<FunResults[Index]>[0]
+      : never
+  }): CombinedResult<
     'result',
     'tuple',
     ResultLike,
@@ -541,13 +539,11 @@ function combineFunMap<
   FunResultLike extends (arg: never) => ResultLike,
   FunResults extends Readonly<Record<string, FunResultLike>>
 >(funResults: readonly [FunResults]) {
-  return (
-    arg: {
-      readonly [Index in keyof FunResults]: FunResults[Index] extends FunResultLike
-        ? Parameters<FunResults[Index]>[0]
-        : never
-    }
-  ): CombinedResult<
+  return (arg: {
+    readonly [Index in keyof FunResults]: FunResults[Index] extends FunResultLike
+      ? Parameters<FunResults[Index]>[0]
+      : never
+  }): CombinedResult<
     'result',
     'map',
     ResultLike,
