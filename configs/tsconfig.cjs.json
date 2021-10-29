@@ -2,7 +2,7 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
       "module": "commonjs",
-      "outDir": "../dist/mjs",
+      "outDir": "../dist/cjs",
       "target": "es6"
   }
 }
