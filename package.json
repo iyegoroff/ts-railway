@@ -2,22 +2,27 @@
   "name": "ts-railway",
   "version": "3.0.1",
   "description": "ROP flavoured Result & AsyncResult types",
-  "type": "module",
   "sideEffects": false,
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/dts/index.d.ts",
   "exports": {
-    ".": "./dist/index.js",
+    ".": {
+      "require": "./dist/cjs/index.js",
+      "import": "./dist/esm/index.js"
+    },
     "./package.json": "./package.json"
   },
-  "types": "./dist/index.d.ts",
   "engines": {
     "node": "^12.20.0 || ^14.13.1 || >=16.0.0"
   },
   "scripts": {
     "preversion": "npm run lint -- --fix && npm run build && npm t && npm run type-coverage && betterer && typedoc src/index.ts && touch docs/.nojekyll",
     "postversion": "git add . && git commit -am lint || : && git push && git push --tags",
-    "build:dts": "tsc -p . -d true --emitDeclarationOnly true --removeComments false",
-    "build:esm": "tsc -p .",
-    "build": "rm -rf dist && mkdir dist && npm run build:dts && npm run build:esm",
+    "build:dts": "tsc -p configs/tsconfig.dts.json",
+    "build:esm": "tsc -p configs/tsconfig.esm.json",
+    "build:cjs": "tsc -p configs/tsconfig.cjs.json",
+    "build": "rm -rf dist && mkdir dist && npm run build:dts && npm run build:esm && npm run build:cjs",
     "watch": "tsc -p . -w",
     "test": "jest",
     "lint": "eslint .",
@@ -87,7 +92,7 @@
     "testEnvironment": "node",
     "globals": {
       "ts-jest": {
-        "tsconfig": "tsconfig.test.json"
+        "tsconfig": "tsconfig.json"
       }
     }
   },
