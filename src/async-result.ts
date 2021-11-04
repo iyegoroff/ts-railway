@@ -1,4 +1,4 @@
-import { Result } from './result'
+import { Result, createFailure, createSuccess } from './result'
 import { SuccessOf, FailureOf, SomeResult, CombinedResult } from './types'
 
 /**
@@ -101,8 +101,8 @@ function map<NewSuccess, Success, Failure>(
   result?: SomeResult<Success, Failure>
 ) {
   return result === undefined
-    ? flatMap<NewSuccess, Failure, Success, Failure>((value) => Result.success(transform(value)))
-    : flatMap((value) => Result.success(transform(value)), result)
+    ? flatMap<NewSuccess, Failure, Success, Failure>((value) => createSuccess(transform(value)))
+    : flatMap((value) => createSuccess(transform(value)), result)
 }
 /**
  * Returns a new async result, mapping any success value using the given
@@ -150,9 +150,9 @@ function mapAsync<NewSuccess, Success, Failure>(
 ) {
   return result === undefined
     ? flatMap<NewSuccess, Failure, Success, Failure>((value) =>
-        transform(value).then(Result.success)
+        transform(value).then(createSuccess)
       )
-    : flatMap((value) => transform(value).then(Result.success), result)
+    : flatMap((value) => transform(value).then(createSuccess), result)
 }
 
 /**
@@ -246,9 +246,9 @@ function mapError<NewFailure, Success, Failure>(
 ) {
   return result === undefined
     ? flatMapError<NewFailure, Success, Failure>((value: Failure) =>
-        Result.failure(transform(value))
+        createFailure(transform(value))
       )
-    : flatMapError((value) => Result.failure(transform(value)), result)
+    : flatMapError((value) => createFailure(transform(value)), result)
 }
 
 /**
@@ -297,9 +297,9 @@ function mapErrorAsync<NewFailure, Success, Failure>(
 ) {
   return result === undefined
     ? flatMapError<NewFailure, Success, Failure>((value: Failure) =>
-        transform(value).then(Result.failure)
+        transform(value).then(createFailure)
       )
-    : flatMapError((value) => transform(value).then(Result.failure), result)
+    : flatMapError((value) => transform(value).then(createFailure), result)
 }
 
 /**
