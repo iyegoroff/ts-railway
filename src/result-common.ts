@@ -1,7 +1,5 @@
 import { createFailure, createSuccess, createThen } from './utils'
-import { SuccessOf, FailureOf, CombinedResult, Result as ResultType } from './types'
-
-export type Result<Success = unknown, Failure = unknown> = ResultType<Success, Failure>
+import { SuccessOf, FailureOf, CombinedResult, Result } from './types'
 
 const then = createThen('sync')
 
@@ -13,7 +11,7 @@ const then = createThen('sync')
  * @param result Original `Result`.
  * @returns A `Result` value with the result of evaluating `transform` as the new failure value if `result` represents a failure.
  */
-function flatMap<
+export function flatMap<
   NewSuccess,
   NewFailure,
   Success,
@@ -32,7 +30,7 @@ function flatMap<
  * @param transform A closure that takes the success value of the `result`.
  * @returns A closure that takes a `Result` value with the result of evaluating `transform` as the new failure value if `result` represents a failure.
  */
-function flatMap<
+export function flatMap<
   NewSuccess,
   NewFailure,
   Success,
@@ -43,7 +41,7 @@ function flatMap<
   transform: (success: SuccessOf<ResultLike>) => NewResultLike
 ): (result: ResultLike) => Result<SuccessOf<NewResultLike>, FailureOf<NewResultLike | ResultLike>>
 
-function flatMap<NewSuccess, NewFailure, Success, Failure>(
+export function flatMap<NewSuccess, NewFailure, Success, Failure>(
   transform: (success: Success) => Result<NewSuccess, NewFailure>,
   result?: Result<Success, Failure>
 ) {
@@ -71,7 +69,7 @@ function flatMap<NewSuccess, NewFailure, Success, Failure>(
  * @param result Original `Result`.
  * @returns A `Result` value with the result of evaluating `transform` as the new success value if `result` represents a success.
  */
-function map<
+export function map<
   NewSuccess,
   Success,
   Failure,
@@ -99,7 +97,7 @@ function map<
  * @param transform A closure that takes the success value of `result`.
  * @returns A closure that takes a `Result` value with the result of evaluating `transform` as the new success value if `result` represents a success.
  */
-function map<
+export function map<
   NewSuccess,
   Success,
   Failure,
@@ -108,7 +106,7 @@ function map<
   transform: (success: SuccessOf<ResultLike>) => NewSuccess
 ): (result: ResultLike) => Result<NewSuccess, FailureOf<ResultLike>>
 
-function map<NewSuccess, Success, Failure>(
+export function map<NewSuccess, Success, Failure>(
   transform: (success: Success) => NewSuccess,
   result?: Result<Success, Failure>
 ) {
@@ -125,7 +123,7 @@ function map<NewSuccess, Success, Failure>(
  * @param result Original `Result`.
  * @returns A `Result` value, either from the closure or the previous `success`.
  */
-function flatMapError<
+export function flatMapError<
   NewFailure,
   Success,
   Failure,
@@ -143,7 +141,7 @@ function flatMapError<
  * @param transform A closure that takes the failure value of the `result`.
  * @returns A closure that takes a `Result` value, either from the closure or the previous `success`.
  */
-function flatMapError<
+export function flatMapError<
   NewFailure,
   Success,
   Failure,
@@ -153,7 +151,7 @@ function flatMapError<
   transform: (failure: FailureOf<ResultLike>) => NewResultLike
 ): (result: ResultLike) => Result<SuccessOf<ResultLike>, FailureOf<NewResultLike>>
 
-function flatMapError<NewFailure, Success, Failure>(
+export function flatMapError<NewFailure, Success, Failure>(
   transform: (failure: Failure) => Result<never, NewFailure>,
   result?: Result<Success, Failure>
 ) {
@@ -183,7 +181,7 @@ function flatMapError<NewFailure, Success, Failure>(
  *  @param result Original `Result`.
  *  @returns A `Result` value with the result of evaluating `transform` as the new failure value if `result` represents a failure.
  */
-function mapError<
+export function mapError<
   NewFailure,
   Success,
   Failure,
@@ -213,7 +211,7 @@ function mapError<
  *  @param transform A closure that takes the failure value of the `result`.
  *  @returns A closure that takes `Result` value with the result of evaluating `transform` as the new failure value if `result` represents a failure.
  */
-function mapError<
+export function mapError<
   NewFailure,
   Success,
   Failure,
@@ -222,7 +220,7 @@ function mapError<
   transform: (failure: FailureOf<ResultLike>) => NewFailure
 ): (result: ResultLike) => Result<SuccessOf<ResultLike>, NewFailure>
 
-function mapError<NewFailure, Success, Failure>(
+export function mapError<NewFailure, Success, Failure>(
   transform: (failure: Failure) => NewFailure,
   result?: Result<Success, Failure>
 ) {
@@ -238,7 +236,7 @@ function mapError<NewFailure, Success, Failure>(
  *
  * @returns A closure that takes an `Result` and returns wrapped value
  */
-function unwrap<
+export function unwrap<
   Success,
   Failure,
   ResultLike extends Result<Success, Failure> = Result<Success, Failure>
@@ -250,7 +248,7 @@ function unwrap<
  * @param transform Success & failure transformers
  * @returns A closure that takes a `Result` and returns transformed wrapped value
  */
-function unwrap<
+export function unwrap<
   Success,
   Failure,
   UnwrapSuccess,
@@ -267,7 +265,7 @@ function unwrap<
  * @param transform Success & failure transformers
  * @returns A closure that takes a `Result` and returns transformed wrapped value
  */
-function unwrap<
+export function unwrap<
   Success,
   Failure,
   UnwrapSuccess,
@@ -285,7 +283,7 @@ function unwrap<
  * @param transform Failure transformer
  * @returns A closure that takes a `Result` and returns transformed wrapped value
  */
-function unwrap<
+export function unwrap<
   Success,
   Failure,
   UnwrapFailure,
@@ -301,7 +299,7 @@ function unwrap<
  * @param transform Failure transformer
  * @returns A closure that takes a `Result` and returns transformed wrapped value
  */
-function unwrap<
+export function unwrap<
   Success,
   Failure,
   UnwrapFailure,
@@ -317,7 +315,7 @@ function unwrap<
  * @param transform Success transformer
  * @returns A closure that takes a `Result` and returns transformed wrapped value
  */
-function unwrap<
+export function unwrap<
   Success,
   Failure,
   UnwrapSuccess,
@@ -333,7 +331,7 @@ function unwrap<
  * @param transform Success transformer
  * @returns A closure that takes a `Result` and returns transformed wrapped value
  */
-function unwrap<
+export function unwrap<
   Success,
   Failure,
   UnwrapSuccess,
@@ -342,7 +340,7 @@ function unwrap<
   readonly success: (val: Success) => UnwrapSuccess
 }): (result: ResultLike) => UnwrapSuccess | FailureOf<ResultLike>
 
-function unwrap<Success, Failure, UnwrapSuccess, UnwrapFailure>(transform?: {
+export function unwrap<Success, Failure, UnwrapSuccess, UnwrapFailure>(transform?: {
   readonly success?: (val: Success) => UnwrapSuccess
   readonly failure?: (val: Failure) => UnwrapFailure
 }) {
@@ -360,7 +358,7 @@ function unwrap<Success, Failure, UnwrapSuccess, UnwrapFailure>(transform?: {
  * @param results `Result`s to combine
  * @returns A `Result` that holds a tuple of `results` successes or a single failure
  */
-function combine<
+export function combine<
   ResultLike extends Result,
   TupleResults extends readonly [ResultLike, ResultLike, ...(readonly ResultLike[])]
 >(...results: TupleResults): CombinedResult<'result', 'tuple', ResultLike, TupleResults>
@@ -371,7 +369,7 @@ function combine<
  * @param results Closures to combine
  * @returns A closure that takes one argument and returns a `Result` that holds a tuple of `results` successes or a single failure
  */
-function combine<
+export function combine<
   ResultLike extends Result,
   FunResultLike extends (arg: never) => ResultLike,
   FunResults extends readonly [FunResultLike, FunResultLike, ...(readonly FunResultLike[])],
@@ -398,7 +396,7 @@ function combine<
  * @param results Object map of `Result`s to combine
  * @returns A `Result` that holds an object map of `results` successes or a single failure
  */
-function combine<
+export function combine<
   ResultLike extends Result,
   MapResults extends Readonly<Record<string, ResultLike>>
 >(
@@ -412,7 +410,7 @@ function combine<
  * @param results Closures to combine
  * @returns A closure that takes one argument and returns a `Result` that holds an object map of `results` successes or a single failure
  */
-function combine<
+export function combine<
   ResultLike extends Result,
   FunResultLike extends (arg: never) => ResultLike,
   FunResults extends Readonly<Record<string, FunResultLike>>,
@@ -436,7 +434,7 @@ function combine<
   ...results: {} extends FunResults ? never : readonly [FunResults]
 ): Arg extends Record<string, undefined> ? () => Res : (arg: Arg) => Res
 
-function combine<
+export function combine<
   ResultLike extends Result,
   FunResultLike extends (arg: never) => ResultLike,
   TupleResults extends readonly [ResultLike, ResultLike, ...(readonly ResultLike[])],
@@ -554,14 +552,3 @@ const combineIter = <ResultLike extends Result>(
   results.length === 1
     ? map((success) => [...successes, success], results[0])
     : flatMap((success) => combineIter(results.slice(1), [...successes, success]), results[0])
-
-export const Result = {
-  success: createSuccess,
-  failure: createFailure,
-  map,
-  flatMap,
-  mapError,
-  flatMapError,
-  unwrap,
-  combine
-} as const

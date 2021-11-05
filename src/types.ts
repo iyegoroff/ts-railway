@@ -1,5 +1,16 @@
-import { Result, SuccessResult, FailureResult } from './result'
-import { AsyncResult } from './async-result'
+export type SuccessResult<Success> = { readonly tag: 'success'; readonly success: Success }
+export type FailureResult<Failure> = { readonly tag: 'failure'; readonly failure: Failure }
+
+/** A value that represents either a success or a failure, including an associated value in each case. */
+export type Result<Success = unknown, Failure = unknown> =
+  | SuccessResult<Success>
+  | FailureResult<Failure>
+
+/**
+ * An async value that represents either a success or a failure,
+ * including an associated value in each case.
+ * */
+export type AsyncResult<Success = unknown, Failure = unknown> = Promise<Result<Success, Failure>>
 
 export type SomeResult<Success = unknown, Failure = unknown> =
   | Result<Success, Failure>
