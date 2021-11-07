@@ -1,13 +1,11 @@
 export type SuccessResult<Success> = {
   readonly tag: 'success'
   readonly success: Success
-  readonly then?: never
 }
 
 export type FailureResult<Failure> = {
   readonly tag: 'failure'
   readonly failure: Failure
-  readonly then?: never
 }
 
 /** A value that represents either a success or a failure, including an associated value in each case. */
