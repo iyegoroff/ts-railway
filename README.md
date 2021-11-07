@@ -1,11 +1,11 @@
 # ts-railway
 
-[![npm version](https://badge.fury.io/js/ts-railway.svg?t=1495378566925)](https://badge.fury.io/js/ts-railway)
+[![npm](https://img.shields.io/npm/v/ts-railway)](https://npm.im/ts-railway)
 [![CircleCI](https://circleci.com/gh/iyegoroff/ts-railway.svg?style=svg)](https://circleci.com/gh/iyegoroff/ts-railway)
 [![codecov](https://codecov.io/gh/iyegoroff/ts-railway/branch/main/graph/badge.svg?t=1520230083925)](https://codecov.io/gh/iyegoroff/ts-railway)
 [![Type Coverage](https://img.shields.io/badge/dynamic/json.svg?label=type-coverage&prefix=%E2%89%A5&suffix=%&query=$.typeCoverage.atLeast&uri=https%3A%2F%2Fraw.githubusercontent.com%2Fiyegoroff%2Fts-railway%2Fmain%2Fpackage.json)](https://github.com/plantain-00/type-coverage)
 ![Libraries.io dependency status for latest release](https://img.shields.io/librariesio/release/npm/ts-railway)
-[![Bundlephobia](https://badgen.net/bundlephobia/minzip/ts-railway?label=gzip)](https://bundlephobia.com/package/ts-railway)
+[![Bundlephobia](https://badgen.net/bundlephobia/minzip/ts-railway?label=min+gzip)](https://bundlephobia.com/package/ts-railway)
 [![npm](https://img.shields.io/npm/l/ts-railway.svg?t=1495378566925)](https://www.npmjs.com/package/ts-railway)
 
 <!-- [![Dependency Status](https://david-dm.org/iyegoroff/ts-railway.svg?t=1495378566925)](https://david-dm.org/iyegoroff/ts-railway)
