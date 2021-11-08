@@ -1,4 +1,4 @@
-import { createFailure, createSuccess, asyncThen } from './utils'
+import { createFailure, createSuccess, asyncThen as then } from './utils'
 import {
   SuccessOf,
   FailureOf,
@@ -8,8 +8,6 @@ import {
 } from './types'
 
 export type AsyncResult<Success = unknown, Failure = unknown> = ResultType<Success, Failure>
-
-const then = asyncThen
 
 /**
  * Returns a new async result, mapping any success value using the given

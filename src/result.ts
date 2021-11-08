@@ -1,9 +1,7 @@
-import { createFailure, createSuccess, syncThen } from './utils'
+import { createFailure, createSuccess, syncThen as then } from './utils'
 import { SuccessOf, FailureOf, CombinedResult, Result as ResultType } from './types'
 
 export type Result<Success = unknown, Failure = unknown> = ResultType<Success, Failure>
-
-const then = syncThen
 
 /**
  * Returns a new result, mapping any success value using the given
