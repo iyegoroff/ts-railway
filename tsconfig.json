@@ -12,6 +12,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "allowUnreachableCode": false,
+    "noUncheckedIndexedAccess": true,
     "types": ["jest"]
   }
 }

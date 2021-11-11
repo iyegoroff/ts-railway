@@ -22,5 +22,8 @@ export const asyncThen = <Success, Failure, Out>(
   transform: (r: Result<Success, Failure>) => Out
 ) => Promise.resolve(result).then(transform)
 
+export const swap = <Success, Failure>(result: Result<Success, Failure>) =>
+  result.tag === 'success' ? createFailure(result.success) : createSuccess(result.failure)
+
 export type SyncThen = typeof syncThen
 export type AsyncThen = typeof asyncThen

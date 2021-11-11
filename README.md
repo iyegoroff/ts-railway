@@ -40,8 +40,7 @@ export declare const Result: {
   readonly map: typeof map
   readonly flatMap: typeof flatMap
   readonly mapError: typeof mapError
-  readonly flatMapError: typeof flatMapError
-  readonly unwrap: typeof unwrap
+  readonly match: typeof match
   readonly combine: typeof combine
 }
 ```
@@ -59,8 +58,7 @@ export declare const AsyncResult: {
   readonly flatMap: typeof flatMap
   readonly mapError: typeof mapError
   readonly mapErrorAsync: typeof mapErrorAsync
-  readonly flatMapError: typeof flatMapError
-  readonly unwrap: typeof unwrap
+  readonly match: typeof match
   readonly combine: typeof combine
 }
 ```

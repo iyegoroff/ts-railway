@@ -2,6 +2,9 @@ import { Result, AsyncResult } from '../src'
 import { pipeable } from 'ts-pipe'
 import { pipeWith } from 'pipe-ts'
 
+// type-coverage:ignore-next-line
+const mockNever: never = undefined as never
+
 describe('AsyncResult', () => {
   test('ofResult', async () => {
     expect(await Promise.resolve(Result.success(1))).toEqual<Result<number, never>>({
@@ -132,23 +135,27 @@ describe('AsyncResult', () => {
     })
   })
 
-  test('unwrap', async () => {
-    const ok: AsyncResult<number, string> = Promise.resolve(Result.success(1))
-    const r1: Promise<string | number> = pipeable(ok).pipe(AsyncResult.unwrap()).value
-    const r2: Promise<string> = pipeable(ok).pipe(
-      AsyncResult.unwrap({ success: (x) => `${x}` })
+  test('match', async () => {
+    const ok = Promise.resolve(Result.success(1))
+    const r1: Promise<string> = pipeable(ok).pipe(
+      AsyncResult.match({ success: (x) => `${x}` })
     ).value
 
-    const err: AsyncResult<string, number> = Promise.resolve(Result.failure(1))
-    const r3: Promise<string | number> = pipeable(err).pipe(AsyncResult.unwrap()).value
-    const r4: Promise<string> = pipeable(err).pipe(
-      AsyncResult.unwrap({ failure: (x) => `${x}` })
+    const err = Promise.resolve(Result.failure(1))
+    const r2: Promise<string> = pipeable(err).pipe(
+      AsyncResult.match({ failure: (x) => `${x}` })
     ).value
 
-    expect(await r1).toEqual(1)
+    const wut = Promise.resolve(Result.success(mockNever))
+    const r3 = pipeable(wut).pipe(AsyncResult.match({})).value
+
+    const wut2 = Promise.resolve(Result.failure(mockNever))
+    const r4 = pipeable(wut2).pipe(AsyncResult.match({})).value
+
+    expect(await r1).toEqual('1')
     expect(await r2).toEqual('1')
-    expect(await r3).toEqual(1)
-    expect(await r4).toEqual('1')
+    expect(await r3).toEqual(undefined)
+    expect(await r4).toEqual(undefined)
   })
 
   test('merged', async () => {
@@ -179,7 +186,7 @@ describe('AsyncResult', () => {
     expect(
       await pipeWith(
         foo(1, 2),
-        AsyncResult.unwrap({
+        AsyncResult.match({
           success: (x) => `op is ${x.op}`,
           failure: (x) => `${x.nan} is nan`
         })
@@ -244,20 +251,9 @@ describe('AsyncResult', () => {
         AsyncResult.mapErrorAsync((x) => Promise.resolve(`${x.nan} is nan`))
       )
     ).toEqual(Result.failure('y is nan'))
-
-    expect(
-      await AsyncResult.flatMapError((x) => Result.failure(`${x.nan} is nan`), foo(2, NaN))
-    ).toEqual(Result.failure('y is nan'))
-
-    expect(
-      await pipeWith(
-        foo(2, NaN),
-        AsyncResult.flatMapError((x) => Result.failure(`${x.nan} is nan`))
-      )
-    ).toEqual(Result.failure('y is nan'))
   })
 
-  test('combine array', async () => {
+  test('combine - default combiner', async () => {
     const combinedFail = AsyncResult.combine(
       Promise.resolve(Result.success(1)),
       Promise.resolve(Result.failure('fail')),
@@ -276,119 +272,24 @@ describe('AsyncResult', () => {
     expect(await combinedSuccess).toEqual(Result.success([1, { value: '!!!' }, 'test']))
   })
 
-  test('combine function array - one argument', async () => {
+  test('combine - custom combiner', async () => {
     const combinedFail = AsyncResult.combine(
-      (x: 1) => Promise.resolve(Result.success(x)),
-      (x: 'fail') => Promise.resolve(Result.failure(x)),
-      (x: { readonly value: '!!!' }) => Result.success(x),
-      (x: { readonly error: Error }) => Result.failure(x)
+      (a, b, c, d) => ({ a, b, c, d }),
+      Promise.resolve(Result.success(1)),
+      Promise.resolve(Result.failure('fail')),
+      Result.success({ value: '!!!' }),
+      Result.failure({ error: new Error('error') })
     )
-
-    expect(
-      await combinedFail([1, 'fail', { value: '!!!' }, { error: new Error('error') }])
-    ).toEqual(Result.failure('fail'))
-
-    const combinedSuccess = AsyncResult.combine(
-      (x: 1) => Result.success(x),
-      (x: { readonly value: '!!!' }) => Promise.resolve(Result.success(x)),
-      (x: 'test') => Result.success(x)
-    )
-
-    expect(await combinedSuccess([1, { value: '!!!' }, 'test'])).toEqual(
-      Result.success([1, { value: '!!!' }, 'test'])
-    )
-  })
-
-  test('combine function array - zero arguments', async () => {
-    const combinedFail = AsyncResult.combine(
-      () => Promise.resolve(Result.success(1)),
-      () => Promise.resolve(Result.failure('fail')),
-      () => Result.success({ value: '!!!' }),
-      () => Result.failure({ error: new Error('error') })
-    )
-
-    expect(await combinedFail()).toEqual(Result.failure('fail'))
-
-    const combinedSuccess = AsyncResult.combine(
-      () => Result.success(1),
-      () => Promise.resolve(Result.success({ value: '!!!' })),
-      () => Result.success('test')
-    )
-
-    expect(await combinedSuccess()).toEqual(Result.success([1, { value: '!!!' }, 'test']))
-  })
-
-  test('combine object', async () => {
-    const combinedFail = AsyncResult.combine({
-      first: Result.success(1),
-      second: Result.failure('fail'),
-      third: Promise.resolve(Result.success({ value: '!!!' })),
-      fourth: Result.failure({ error: new Error('error') })
-    })
 
     expect(await combinedFail).toEqual(Result.failure('fail'))
 
-    const combinedSuccess = AsyncResult.combine({
-      first: Promise.resolve(Result.success(1)),
-      second: Promise.resolve(Result.success({ value: '!!!' })),
-      third: Promise.resolve(Result.success('test'))
-    })
-
-    expect(await combinedSuccess).toEqual(
-      Result.success({ first: 1, second: { value: '!!!' }, third: 'test' })
+    const combinedSuccess = AsyncResult.combine(
+      (a, b, c) => ({ a, b, c }),
+      Result.success(1),
+      Promise.resolve(Result.success({ value: '!!!' })),
+      Result.success('test')
     )
-  })
 
-  test('combine function object - one argument', async () => {
-    const combinedFail = AsyncResult.combine({
-      first: (x: 1) => Result.success(x),
-      second: (x: 'fail') => Result.failure(x),
-      third: (x: { readonly value: '!!!' }) => Promise.resolve(Result.success(x)),
-      fourth: (x: { readonly error: Error }) => Result.failure(x)
-    })
-
-    expect(
-      await combinedFail({
-        first: 1,
-        second: 'fail',
-        third: { value: '!!!' },
-        fourth: { error: new Error('error') }
-      })
-    ).toEqual(Result.failure('fail'))
-
-    const combinedSuccess = AsyncResult.combine({
-      first: (x: 1) => Promise.resolve(Result.success(x)),
-      second: (x: { readonly value: '!!!' }) => Promise.resolve(Result.success(x)),
-      third: (x: 'test') => Promise.resolve(Result.success(x))
-    })
-
-    expect(
-      await combinedSuccess({
-        first: 1,
-        second: { value: '!!!' },
-        third: 'test'
-      })
-    ).toEqual(Result.success({ first: 1, second: { value: '!!!' }, third: 'test' }))
-  })
-
-  test('combine function object - zero arguments', async () => {
-    const combinedFail = AsyncResult.combine({
-      first: () => Result.success(1),
-      second: () => Result.failure('fail'),
-      third: () => Promise.resolve(Result.success({ value: '!!!' })),
-      fourth: () => Result.failure({ error: new Error('error') })
-    })
-
-    expect(await combinedFail()).toEqual(Result.failure('fail'))
-
-    const combinedSuccess = AsyncResult.combine({
-      first: () => Promise.resolve(Result.success(1)),
-      second: () => Promise.resolve(Result.success({ value: '!!!' })),
-      third: () => Promise.resolve(Result.success('test'))
-    })
-
-    expect(await combinedSuccess()).toEqual(
-      Result.success({ first: 1, second: { value: '!!!' }, third: 'test' })
-    )
+    expect(await combinedSuccess).toEqual(Result.success({ a: 1, b: { value: '!!!' }, c: 'test' }))
   })
 })

@@ -2,6 +2,9 @@ import { Result } from '../src'
 import { pipeable } from 'ts-pipe'
 import { pipeWith } from 'pipe-ts'
 
+// type-coverage:ignore-next-line
+const mockNever: never = undefined as never
+
 describe('Result', () => {
   test('map success', () => {
     const ok = Result.success(1)
@@ -57,19 +60,23 @@ describe('Result', () => {
     })
   })
 
-  test('unwrap', () => {
-    const ok: Result<number, string> = Result.success(1)
-    const r1: string | number = pipeable(ok).pipe(Result.unwrap()).value
-    const r2: string = pipeable(ok).pipe(Result.unwrap({ success: (x) => `${x}` })).value
+  test('match', () => {
+    const ok = Result.success(1)
+    const r1: string = pipeable(ok).pipe(Result.match({ success: (x) => `${x}` })).value
 
-    const err: Result<string, number> = Result.failure(1)
-    const r3: string | number = pipeable(err).pipe(Result.unwrap()).value
-    const r4: string = pipeable(err).pipe(Result.unwrap({ failure: (x) => `${x}` })).value
+    const err = Result.failure(1)
+    const r2: string = pipeable(err).pipe(Result.match({ failure: (x) => `${x}` })).value
 
-    expect(r1).toEqual(1)
+    const wut = Result.success(mockNever)
+    const r3 = pipeable(wut).pipe(Result.match({})).value
+
+    const wut2 = Result.failure(mockNever)
+    const r4 = pipeable(wut2).pipe(Result.match({})).value
+
+    expect(r1).toEqual('1')
     expect(r2).toEqual('1')
-    expect(r3).toEqual(1)
-    expect(r4).toEqual('1')
+    expect(r3).toEqual(undefined)
+    expect(r4).toEqual(undefined)
   })
 
   test('merged', () => {
@@ -100,7 +107,7 @@ describe('Result', () => {
     expect(
       pipeWith(
         foo(1, 2),
-        Result.unwrap({
+        Result.match({
           success: (x) => `op is ${x.op}`,
           failure: (x) => `${x.nan} is nan`
         })
@@ -141,20 +148,9 @@ describe('Result', () => {
         Result.mapError((x) => `${x.nan} is nan`)
       )
     ).toEqual(Result.failure('y is nan'))
-
-    expect(Result.flatMapError((x) => Result.failure(`${x.nan} is nan`), foo(2, NaN))).toEqual(
-      Result.failure('y is nan')
-    )
-
-    expect(
-      pipeWith(
-        foo(2, NaN),
-        Result.flatMapError((x) => Result.failure(`${x.nan} is nan`))
-      )
-    ).toEqual(Result.failure('y is nan'))
   })
 
-  test('combine array', () => {
+  test('combine - default combiner', () => {
     const combinedFail = Result.combine(
       Result.success(1),
       Result.failure('fail'),
@@ -173,119 +169,24 @@ describe('Result', () => {
     expect(combinedSuccess).toEqual(Result.success([1, { value: '!!!' }, 'test']))
   })
 
-  test('combine function array - one argument', () => {
+  test('combine - custom combiner', () => {
     const combinedFail = Result.combine(
-      (x: 1) => Result.success(x),
-      (x: 'fail') => Result.failure(x),
-      (x: { readonly value: '!!!' }) => Result.success(x),
-      (x: { readonly error: Error }) => Result.failure(x)
+      (a, b, c, d) => ({ a, b, c, d }),
+      Result.success(1),
+      Result.failure('fail'),
+      Result.success({ value: '!!!' }),
+      Result.failure({ error: new Error('error') })
     )
-
-    expect(combinedFail([1, 'fail', { value: '!!!' }, { error: new Error('error') }])).toEqual(
-      Result.failure('fail')
-    )
-
-    const combinedSuccess = Result.combine(
-      (x: 1) => Result.success(x),
-      (x: { readonly value: '!!!' }) => Result.success(x),
-      (x: 'test') => Result.success(x)
-    )
-
-    expect(combinedSuccess([1, { value: '!!!' }, 'test'])).toEqual(
-      Result.success([1, { value: '!!!' }, 'test'])
-    )
-  })
-
-  test('combine function array - zero arguments', () => {
-    const combinedFail = Result.combine(
-      () => Result.success(1),
-      () => Result.failure('fail'),
-      () => Result.success({ value: '!!!' }),
-      () => Result.failure({ error: new Error('error') })
-    )
-
-    expect(combinedFail()).toEqual(Result.failure('fail'))
-
-    const combinedSuccess = Result.combine(
-      () => Result.success(1),
-      () => Result.success({ value: '!!!' }),
-      () => Result.success('test')
-    )
-
-    expect(combinedSuccess()).toEqual(Result.success([1, { value: '!!!' }, 'test']))
-  })
-
-  test('combine object', () => {
-    const combinedFail = Result.combine({
-      first: Result.success(1),
-      second: Result.failure('fail'),
-      third: Result.success({ value: '!!!' }),
-      fourth: Result.failure({ error: new Error('error') })
-    })
 
     expect(combinedFail).toEqual(Result.failure('fail'))
 
-    const combinedSuccess = Result.combine({
-      first: Result.success(1),
-      second: Result.success({ value: '!!!' }),
-      third: Result.success('test')
-    })
-
-    expect(combinedSuccess).toEqual(
-      Result.success({ first: 1, second: { value: '!!!' }, third: 'test' })
+    const combinedSuccess = Result.combine(
+      (a, b, c) => ({ a, b, c }),
+      Result.success(1),
+      Result.success({ value: '!!!' }),
+      Result.success('test')
     )
-  })
 
-  test('combine function object - one argument', () => {
-    const combinedFail = Result.combine({
-      first: (x: 1) => Result.success(x),
-      second: (x: 'fail') => Result.failure(x),
-      third: (x: { readonly value: '!!!' }) => Result.success(x),
-      fourth: (x: { readonly error: Error }) => Result.failure(x)
-    })
-
-    expect(
-      combinedFail({
-        first: 1,
-        second: 'fail',
-        third: { value: '!!!' },
-        fourth: { error: new Error('error') }
-      })
-    ).toEqual(Result.failure('fail'))
-
-    const combinedSuccess = Result.combine({
-      first: (x: 1) => Result.success(x),
-      second: (x: { readonly value: '!!!' }) => Result.success(x),
-      third: (x: 'test') => Result.success(x)
-    })
-
-    expect(
-      combinedSuccess({
-        first: 1,
-        second: { value: '!!!' },
-        third: 'test'
-      })
-    ).toEqual(Result.success({ first: 1, second: { value: '!!!' }, third: 'test' }))
-  })
-
-  test('combine function object - zero arguments', () => {
-    const combinedFail = Result.combine({
-      first: () => Result.success(1),
-      second: () => Result.failure('fail'),
-      third: () => Result.success({ value: '!!!' }),
-      fourth: () => Result.failure({ error: new Error('error') })
-    })
-
-    expect(combinedFail()).toEqual(Result.failure('fail'))
-
-    const combinedSuccess = Result.combine({
-      first: () => Result.success(1),
-      second: () => Result.success({ value: '!!!' }),
-      third: () => Result.success('test')
-    })
-
-    expect(combinedSuccess()).toEqual(
-      Result.success({ first: 1, second: { value: '!!!' }, third: 'test' })
-    )
+    expect(combinedSuccess).toEqual(Result.success({ a: 1, b: { value: '!!!' }, c: 'test' }))
   })
 })
