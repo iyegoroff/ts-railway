@@ -190,26 +190,14 @@ function mapError<NewFailure, Success, Failure>(
  * @param transform Success & failure transformers
  * @returns A closure that takes a `Result` and returns transformed wrapped value
  */
-function match<
-  Success,
-  Failure,
-  MatchSuccess,
-  MatchFailure,
-  ResultLike extends Result<Success, Failure> = Result<Success, Failure>
->(
-  transform: ResultMatcher<ResultLike, MatchSuccess | MatchFailure>
-): (result: ResultLike) => MatchSuccess | MatchFailure
+function match<ResultLike extends Result, Matcher extends ResultMatcher<ResultLike, unknown>>(
+  transform: Matcher
+): (result: ResultLike) => Matcher extends ResultMatcher<ResultLike, infer Match> ? Match : never
 
-function match<
-  Success,
-  Failure,
-  MatchSuccess,
-  MatchFailure,
-  ResultLike extends Result<Success, Failure> = Result<Success, Failure>
->(
-  transform: ResultMatcher<ResultLike, MatchSuccess | MatchFailure>,
+function match<ResultLike extends Result, Matcher extends ResultMatcher<ResultLike, unknown>>(
+  transform: Matcher,
   result: ResultLike
-): MatchSuccess | MatchFailure
+): Matcher extends ResultMatcher<ResultLike, infer Match> ? Match : never
 
 /**
  * Extracts wrapped value from result and transforms failure case
@@ -218,17 +206,6 @@ function match<
  * @param transform Failure transformer
  * @returns A closure that takes a `Result` and returns transformed wrapped value
  */
-function match<
-  Failure,
-  MatchFailure,
-  ResultLike extends Result<never, Failure> = Result<never, Failure>
->(transform: ResultMatcher<ResultLike, MatchFailure>): (result: ResultLike) => MatchFailure
-
-function match<
-  Failure,
-  MatchFailure,
-  ResultLike extends Result<never, Failure> = Result<never, Failure>
->(transform: ResultMatcher<ResultLike, MatchFailure>, result: ResultLike): MatchFailure
 
 /**
  * Extracts wrapped value from result and transforms success case
@@ -237,17 +214,6 @@ function match<
  * @param transform Success transformer
  * @returns A closure that takes a `Result` and returns transformed wrapped value
  */
-function match<
-  Success,
-  MatchSuccess,
-  ResultLike extends Result<Success, never> = Result<Success, never>
->(transform: ResultMatcher<ResultLike, MatchSuccess>): (result: ResultLike) => MatchSuccess
-
-function match<
-  Success,
-  MatchSuccess,
-  ResultLike extends Result<Success, never> = Result<Success, never>
->(transform: ResultMatcher<ResultLike, MatchSuccess>, result: ResultLike): MatchSuccess
 
 function match<Success, Failure, Match>(
   transform: ResultMatcher<Result<Success, Failure>, Match>,

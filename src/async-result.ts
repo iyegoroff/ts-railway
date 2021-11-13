@@ -156,26 +156,16 @@ function mapError<NewFailure, Success, Failure>(
  * @param transform Success & failure transformers
  * @returns A closure that takes a `Result` and returns transformed wrapped value
  */
-function match<
-  Success,
-  Failure,
-  MatchSuccess,
-  MatchFailure,
-  ResultLike extends SomeResult<Success, Failure> = SomeResult<Success, Failure>
->(
-  transform: ResultMatcher<ResultLike, MatchSuccess | MatchFailure>
-): (result: ResultLike) => Promise<MatchSuccess | MatchFailure>
-
-function match<
-  Success,
-  Failure,
-  MatchSuccess,
-  MatchFailure,
-  ResultLike extends SomeResult<Success, Failure> = SomeResult<Success, Failure>
->(
-  transform: ResultMatcher<ResultLike, MatchSuccess | MatchFailure>,
+function match<ResultLike extends SomeResult, Matcher extends ResultMatcher<ResultLike, unknown>>(
+  transform: Matcher
+): (
   result: ResultLike
-): Promise<MatchSuccess | MatchFailure>
+) => Matcher extends ResultMatcher<ResultLike, infer Match> ? Promise<Match> : never
+
+function match<ResultLike extends SomeResult, Matcher extends ResultMatcher<ResultLike, unknown>>(
+  transform: Matcher,
+  result: ResultLike
+): Matcher extends ResultMatcher<ResultLike, infer Match> ? Promise<Match> : never
 
 /**
  * Extracts wrapped value from result and transforms failure case
@@ -184,17 +174,6 @@ function match<
  * @param transform Failure transformer
  * @returns A closure that takes a `Result` and returns transformed wrapped value
  */
-function match<
-  Failure,
-  MatchFailure,
-  ResultLike extends SomeResult<never, Failure> = SomeResult<never, Failure>
->(transform: ResultMatcher<ResultLike, MatchFailure>): (result: ResultLike) => Promise<MatchFailure>
-
-function match<
-  Failure,
-  MatchFailure,
-  ResultLike extends SomeResult<never, Failure> = SomeResult<never, Failure>
->(transform: ResultMatcher<ResultLike, MatchFailure>, result: ResultLike): Promise<MatchFailure>
 
 /**
  * Extracts wrapped value from result and transforms success case
@@ -203,17 +182,6 @@ function match<
  * @param transform Success transformer
  * @returns A closure that takes a `Result` and returns transformed wrapped value
  */
-function match<
-  Success,
-  MatchSuccess,
-  ResultLike extends SomeResult<Success, never> = SomeResult<Success, never>
->(transform: ResultMatcher<ResultLike, MatchSuccess>): (result: ResultLike) => Promise<MatchSuccess>
-
-function match<
-  Success,
-  MatchSuccess,
-  ResultLike extends SomeResult<Success, never> = SomeResult<Success, never>
->(transform: ResultMatcher<ResultLike, MatchSuccess>, result: ResultLike): Promise<MatchSuccess>
 
 function match<Success, Failure, Match>(
   transform: ResultMatcher<SomeResult<Success, Failure>, Match>,
