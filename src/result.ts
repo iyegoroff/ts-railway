@@ -199,14 +199,20 @@ function match<ResultLike extends Result, MatcherLike extends Matcher<ResultLike
   result: ResultLike
 ): MatcherLike extends Matcher<ResultLike, infer Match> ? Match : never
 
-function match<ResultLike extends Result, Match>(
-  transform: ResultMatcher<SuccessOf<ResultLike>, FailureOf<ResultLike>, Match>,
+function match<
+  ResultLike extends Result,
+  MatcherLike extends ResultMatcher<SuccessOf<ResultLike>, FailureOf<ResultLike>, unknown>
+>(
+  transform: MatcherLike,
   result: ResultLike
-): Match
+): MatcherLike extends Matcher<ResultLike, infer Match> ? Match : never
 
-function match<ResultLike extends Result, Match>(
-  transform: ResultMatcher<SuccessOf<ResultLike>, FailureOf<ResultLike>, Match>
-): (result: ResultLike) => Match
+function match<
+  ResultLike extends Result,
+  MatcherLike extends ResultMatcher<SuccessOf<ResultLike>, FailureOf<ResultLike>, unknown>
+>(
+  transform: MatcherLike
+): (result: ResultLike) => MatcherLike extends Matcher<ResultLike, infer Match> ? Match : never
 
 /**
  * Extracts wrapped value from result and transforms failure case
