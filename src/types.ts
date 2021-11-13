@@ -41,26 +41,32 @@ export type SuccessOf<R extends SomeResult> = R extends Promise<infer AR>
   ? Success
   : never
 
-export type ResultMatcher<R extends SomeResult, Match = unknown> = FailureOf<R> extends never
-  ? {
-      readonly success: (success: SuccessOf<R>) => Match
-      readonly failure?: never
+type SuccessResultMatcher<Success, Match> = {
+  readonly success: (success: Success) => Match
+  readonly failure?: never
+  readonly default?: never
+}
+
+type FailureResultMatcher<Failure, Match> = {
+  readonly failure: (failure: Failure) => Match
+  readonly success?: never
+  readonly default?: never
+}
+
+export type ResultMatcher<Success, Failure, Match> =
+  | {
+      readonly success: (success: Success) => Match
+      readonly failure: (failure: Failure) => Match
       readonly default?: never
     }
+  | {
+      readonly success?: (success: Success) => Match
+      readonly failure?: (failure: Failure) => Match
+      readonly default: Match
+    }
+
+export type Matcher<R extends SomeResult, Match> = FailureOf<R> extends never
+  ? SuccessResultMatcher<SuccessOf<R>, Match>
   : SuccessOf<R> extends never
-  ? {
-      readonly success?: never
-      readonly failure: (failure: FailureOf<R>) => Match
-      readonly default?: never
-    }
-  :
-      | {
-          readonly success: (success: SuccessOf<R>) => Match
-          readonly failure: (failure: FailureOf<R>) => Match
-          readonly default?: never
-        }
-      | {
-          readonly success?: (success: SuccessOf<R>) => Match
-          readonly failure?: (failure: FailureOf<R>) => Match
-          readonly default: Match
-        }
+  ? FailureResultMatcher<FailureOf<R>, Match>
+  : ResultMatcher<SuccessOf<R>, FailureOf<R>, Match>

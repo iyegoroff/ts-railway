@@ -1,5 +1,5 @@
 import { createFailure, createSuccess, swap, syncThen as then } from './utils'
-import { SuccessOf, FailureOf, Result as ResultType, ResultMatcher } from './types'
+import { SuccessOf, FailureOf, Result as ResultType, Matcher, ResultMatcher } from './types'
 
 export type Result<Success = unknown, Failure = unknown> = ResultType<Success, Failure>
 
@@ -190,14 +190,23 @@ function mapError<NewFailure, Success, Failure>(
  * @param transform Success & failure transformers
  * @returns A closure that takes a `Result` and returns transformed wrapped value
  */
-function match<ResultLike extends Result, Matcher extends ResultMatcher<ResultLike, unknown>>(
-  transform: Matcher
-): (result: ResultLike) => Matcher extends ResultMatcher<ResultLike, infer Match> ? Match : never
+function match<ResultLike extends Result, MatcherLike extends Matcher<ResultLike, unknown>>(
+  transform: MatcherLike
+): (result: ResultLike) => MatcherLike extends Matcher<ResultLike, infer Match> ? Match : never
 
-function match<ResultLike extends Result, Matcher extends ResultMatcher<ResultLike, unknown>>(
-  transform: Matcher,
+function match<ResultLike extends Result, MatcherLike extends Matcher<ResultLike, unknown>>(
+  transform: MatcherLike,
   result: ResultLike
-): Matcher extends ResultMatcher<ResultLike, infer Match> ? Match : never
+): MatcherLike extends Matcher<ResultLike, infer Match> ? Match : never
+
+function match<ResultLike extends Result, Match>(
+  transform: ResultMatcher<SuccessOf<ResultLike>, FailureOf<ResultLike>, Match>,
+  result: ResultLike
+): Match
+
+function match<ResultLike extends Result, Match>(
+  transform: ResultMatcher<SuccessOf<ResultLike>, FailureOf<ResultLike>, Match>
+): (result: ResultLike) => Match
 
 /**
  * Extracts wrapped value from result and transforms failure case
@@ -216,7 +225,7 @@ function match<ResultLike extends Result, Matcher extends ResultMatcher<ResultLi
  */
 
 function match<Success, Failure, Match>(
-  transform: ResultMatcher<Result<Success, Failure>, Match>,
+  transform: Matcher<Result<Success, Failure>, Match>,
   result?: Result<Success, Failure>
 ) {
   return result === undefined
