@@ -2,9 +2,6 @@ import { Result } from '../src'
 import { pipeable } from 'ts-pipe'
 import { pipeWith } from 'pipe-ts'
 
-// type-coverage:ignore-next-line
-const mockNever: never = undefined as never
-
 describe('Result', () => {
   test('map success', () => {
     const ok = Result.success(1)
@@ -67,16 +64,52 @@ describe('Result', () => {
     const err = Result.failure(1)
     const r2: string = pipeable(err).pipe(Result.match({ failure: (x) => `${x}` })).value
 
-    const wut = Result.success(mockNever)
-    const r3 = pipeable(wut).pipe(Result.match({})).value
+    const def = Math.random() > 0.5 ? Result.success(1) : Result.failure(2)
+    const r3 = pipeable(def).pipe(
+      Result.match({
+        default: 123
+      })
+    ).value
 
-    const wut2 = Result.failure(mockNever)
-    const r4 = pipeable(wut2).pipe(Result.match({})).value
+    const defOk = ((): Result<1, 2> => Result.success(1))()
+    const r4 = pipeable(defOk).pipe(
+      Result.match({
+        failure: (x) => x,
+        success: (x) => x
+      })
+    ).value
+
+    const defErr = ((): Result<1, 2> => Result.failure(2))()
+    const r5 = pipeable(defErr).pipe(
+      Result.match({
+        failure: (x) => x,
+        success: (x) => x
+      })
+    ).value
+
+    const defOkNoSuccess = ((): Result<1, 2> => Result.success(1))()
+    const r6 = pipeable(defOkNoSuccess).pipe(
+      Result.match({
+        failure: (x) => x,
+        default: 5
+      })
+    ).value
+
+    const defErrNoFailure = ((): Result<1, 2> => Result.failure(2))()
+    const r7 = pipeable(defErrNoFailure).pipe(
+      Result.match({
+        success: (x) => x,
+        default: 5
+      })
+    ).value
 
     expect(r1).toEqual('1')
     expect(r2).toEqual('1')
-    expect(r3).toEqual(undefined)
-    expect(r4).toEqual(undefined)
+    expect(r3).toEqual(123)
+    expect(r4).toEqual(1)
+    expect(r5).toEqual(2)
+    expect(r6).toEqual(5)
+    expect(r7).toEqual(5)
   })
 
   test('merged', () => {

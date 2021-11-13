@@ -2,9 +2,6 @@ import { Result, AsyncResult } from '../src'
 import { pipeable } from 'ts-pipe'
 import { pipeWith } from 'pipe-ts'
 
-// type-coverage:ignore-next-line
-const mockNever: never = undefined as never
-
 describe('AsyncResult', () => {
   test('ofResult', async () => {
     expect(await Promise.resolve(Result.success(1))).toEqual<Result<number, never>>({
@@ -146,16 +143,52 @@ describe('AsyncResult', () => {
       AsyncResult.match({ failure: (x) => `${x}` })
     ).value
 
-    const wut = Promise.resolve(Result.success(mockNever))
-    const r3 = pipeable(wut).pipe(AsyncResult.match({})).value
+    const def = Promise.resolve(Math.random() > 0.5 ? Result.success(1) : Result.failure(2))
+    const r3 = pipeable(def).pipe(
+      AsyncResult.match({
+        default: 123
+      })
+    ).value
 
-    const wut2 = Promise.resolve(Result.failure(mockNever))
-    const r4 = pipeable(wut2).pipe(AsyncResult.match({})).value
+    const defOk = Promise.resolve(((): Result<1, 2> => Result.success(1))())
+    const r4 = pipeable(defOk).pipe(
+      AsyncResult.match({
+        failure: (x) => x,
+        success: (x) => x
+      })
+    ).value
+
+    const defErr = Promise.resolve(((): Result<1, 2> => Result.failure(2))())
+    const r5 = pipeable(defErr).pipe(
+      AsyncResult.match({
+        failure: (x) => x,
+        success: (x) => x
+      })
+    ).value
+
+    const defOkNoSuccess = Promise.resolve(((): Result<1, 2> => Result.success(1))())
+    const r6 = pipeable(defOkNoSuccess).pipe(
+      AsyncResult.match({
+        failure: (x) => x,
+        default: 5
+      })
+    ).value
+
+    const defErrNoFailure = Promise.resolve(((): Result<1, 2> => Result.failure(2))())
+    const r7 = pipeable(defErrNoFailure).pipe(
+      AsyncResult.match({
+        success: (x) => x,
+        default: 5
+      })
+    ).value
 
     expect(await r1).toEqual('1')
     expect(await r2).toEqual('1')
-    expect(await r3).toEqual(undefined)
-    expect(await r4).toEqual(undefined)
+    expect(await r3).toEqual(123)
+    expect(await r4).toEqual(1)
+    expect(await r5).toEqual(2)
+    expect(await r6).toEqual(5)
+    expect(await r7).toEqual(5)
   })
 
   test('merged', async () => {

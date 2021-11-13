@@ -166,6 +166,17 @@ function match<
   transform: ResultMatcher<ResultLike, MatchSuccess | MatchFailure>
 ): (result: ResultLike) => Promise<MatchSuccess | MatchFailure>
 
+function match<
+  Success,
+  Failure,
+  MatchSuccess,
+  MatchFailure,
+  ResultLike extends SomeResult<Success, Failure> = SomeResult<Success, Failure>
+>(
+  transform: ResultMatcher<ResultLike, MatchSuccess | MatchFailure>,
+  result: ResultLike
+): Promise<MatchSuccess | MatchFailure>
+
 /**
  * Extracts wrapped value from result and transforms failure case
  * or returns success value as is
@@ -178,6 +189,12 @@ function match<
   MatchFailure,
   ResultLike extends SomeResult<never, Failure> = SomeResult<never, Failure>
 >(transform: ResultMatcher<ResultLike, MatchFailure>): (result: ResultLike) => Promise<MatchFailure>
+
+function match<
+  Failure,
+  MatchFailure,
+  ResultLike extends SomeResult<never, Failure> = SomeResult<never, Failure>
+>(transform: ResultMatcher<ResultLike, MatchFailure>, result: ResultLike): Promise<MatchFailure>
 
 /**
  * Extracts wrapped value from result and transforms success case
@@ -192,16 +209,24 @@ function match<
   ResultLike extends SomeResult<Success, never> = SomeResult<Success, never>
 >(transform: ResultMatcher<ResultLike, MatchSuccess>): (result: ResultLike) => Promise<MatchSuccess>
 
-function match<ResultLike extends SomeResult<never, never> = SomeResult<never, never>>(
-  transform: ResultMatcher<ResultLike, undefined>
-): (result: ResultLike) => Promise<undefined>
+function match<
+  Success,
+  MatchSuccess,
+  ResultLike extends SomeResult<Success, never> = SomeResult<Success, never>
+>(transform: ResultMatcher<ResultLike, MatchSuccess>, result: ResultLike): Promise<MatchSuccess>
 
-function match<Success, Failure, Match>({
-  success,
-  failure
-}: ResultMatcher<SomeResult<Success, Failure>, Match>) {
-  return (result: SomeResult<Success, Failure>) =>
-    then(result, (r) => (r.tag === 'success' ? success?.(r.success) : failure?.(r.failure)))
+function match<Success, Failure, Match>(
+  transform: ResultMatcher<SomeResult<Success, Failure>, Match>,
+  result?: SomeResult<Success, Failure>
+) {
+  return result === undefined
+    ? (r: SomeResult<Success, Failure>) => match(transform, r)
+    : then(
+        result,
+        (r) =>
+          (r.tag === 'success' ? transform.success?.(r.success) : transform.failure?.(r.failure)) ??
+          transform.default
+      )
 }
 
 function combine<

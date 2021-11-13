@@ -200,6 +200,17 @@ function match<
   transform: ResultMatcher<ResultLike, MatchSuccess | MatchFailure>
 ): (result: ResultLike) => MatchSuccess | MatchFailure
 
+function match<
+  Success,
+  Failure,
+  MatchSuccess,
+  MatchFailure,
+  ResultLike extends Result<Success, Failure> = Result<Success, Failure>
+>(
+  transform: ResultMatcher<ResultLike, MatchSuccess | MatchFailure>,
+  result: ResultLike
+): MatchSuccess | MatchFailure
+
 /**
  * Extracts wrapped value from result and transforms failure case
  * or returns success value as is
@@ -212,6 +223,12 @@ function match<
   MatchFailure,
   ResultLike extends Result<never, Failure> = Result<never, Failure>
 >(transform: ResultMatcher<ResultLike, MatchFailure>): (result: ResultLike) => MatchFailure
+
+function match<
+  Failure,
+  MatchFailure,
+  ResultLike extends Result<never, Failure> = Result<never, Failure>
+>(transform: ResultMatcher<ResultLike, MatchFailure>, result: ResultLike): MatchFailure
 
 /**
  * Extracts wrapped value from result and transforms success case
@@ -226,16 +243,24 @@ function match<
   ResultLike extends Result<Success, never> = Result<Success, never>
 >(transform: ResultMatcher<ResultLike, MatchSuccess>): (result: ResultLike) => MatchSuccess
 
-function match<ResultLike extends Result<never, never> = Result<never, never>>(
-  transform: ResultMatcher<ResultLike, undefined>
-): (result: ResultLike) => undefined
+function match<
+  Success,
+  MatchSuccess,
+  ResultLike extends Result<Success, never> = Result<Success, never>
+>(transform: ResultMatcher<ResultLike, MatchSuccess>, result: ResultLike): MatchSuccess
 
-function match<Success, Failure, Match>({
-  success,
-  failure
-}: ResultMatcher<Result<Success, Failure>, Match>) {
-  return (result: Result<Success, Failure>) =>
-    then(result, (r) => (r.tag === 'success' ? success?.(r.success) : failure?.(r.failure)))
+function match<Success, Failure, Match>(
+  transform: ResultMatcher<Result<Success, Failure>, Match>,
+  result?: Result<Success, Failure>
+) {
+  return result === undefined
+    ? (r: Result<Success, Failure>) => match(transform, r)
+    : then(
+        result,
+        (r) =>
+          (r.tag === 'success' ? transform.success?.(r.success) : transform.failure?.(r.failure)) ??
+          transform.default
+      )
 }
 
 function combine<
