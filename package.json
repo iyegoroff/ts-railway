@@ -1,6 +1,6 @@
 {
   "name": "ts-railway",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "ROP flavoured Result & AsyncResult types",
   "sideEffects": false,
   "main": "./dist/cjs/index.js",
