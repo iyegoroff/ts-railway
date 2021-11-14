@@ -38,8 +38,9 @@ export declare const Result: {
   readonly success: typeof createSuccess
   readonly failure: typeof createFailure
   readonly map: typeof map
-  readonly flatMap: typeof flatMap
   readonly mapError: typeof mapError
+  readonly flatMap: typeof flatMap
+  readonly flatMapError: typeof flatMapError
   readonly match: typeof match
   readonly combine: typeof combine
 }
@@ -54,9 +55,10 @@ export type AsyncResult<Success, Failure> = Promise<Result<Success, Failure>>
 
 export declare const AsyncResult: {
   readonly map: typeof map
-  readonly mapAsync: typeof mapAsync
-  readonly flatMap: typeof flatMap
   readonly mapError: typeof mapError
+  readonly flatMap: typeof flatMap
+  readonly flatMapError: typeof flatMapError
+  readonly mapAsync: typeof mapAsync
   readonly mapErrorAsync: typeof mapErrorAsync
   readonly match: typeof match
   readonly combine: typeof combine

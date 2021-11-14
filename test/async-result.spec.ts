@@ -284,6 +284,21 @@ describe('AsyncResult', () => {
         AsyncResult.mapErrorAsync((x) => Promise.resolve(`${x.nan} is nan`))
       )
     ).toEqual(Result.failure('y is nan'))
+
+    expect(
+      await AsyncResult.flatMapError((x) => Result.failure(`${x.nan} is nan`), foo(2, NaN))
+    ).toEqual(Result.failure('y is nan'))
+
+    expect(
+      await AsyncResult.flatMapError((x) => Result.failure(`${x.nan} is nan`), foo(2, 2))
+    ).toEqual(Result.success({ op: '===' }))
+
+    expect(
+      await pipeWith(
+        foo(2, NaN),
+        AsyncResult.flatMapError((x) => Result.failure(`${x.nan} is nan`))
+      )
+    ).toEqual(Result.failure('y is nan'))
   })
 
   test('combine - default combiner', async () => {

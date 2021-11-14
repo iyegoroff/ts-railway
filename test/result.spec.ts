@@ -181,6 +181,21 @@ describe('Result', () => {
         Result.mapError((x) => `${x.nan} is nan`)
       )
     ).toEqual(Result.failure('y is nan'))
+
+    expect(Result.flatMapError((x) => Result.failure(`${x.nan} is nan`), foo(2, NaN))).toEqual(
+      Result.failure('y is nan')
+    )
+
+    expect(Result.flatMapError((x) => Result.failure(`${x.nan} is nan`), foo(2, 2))).toEqual(
+      Result.success({ op: '===' })
+    )
+
+    expect(
+      pipeWith(
+        foo(2, NaN),
+        Result.flatMapError((x) => Result.failure(`${x.nan} is nan`))
+      )
+    ).toEqual(Result.failure('y is nan'))
   })
 
   test('combine - default combiner', () => {

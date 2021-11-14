@@ -12,6 +12,10 @@ export const createFailure = <Failure>(failure: Failure): FailureResult<Failure>
   failure
 })
 
+export const isSuccess = <Success, Failure>(
+  result: Result<Success, Failure>
+): result is SuccessResult<Success> => result.tag === 'success'
+
 export const syncThen = <Success, Failure, Out>(
   result: Result<Success, Failure>,
   transform: (r: Result<Success, Failure>) => Out
@@ -23,7 +27,7 @@ export const asyncThen = <Success, Failure, Out>(
 ) => Promise.resolve(result).then(transform)
 
 export const swap = <Success, Failure>(result: Result<Success, Failure>) =>
-  result.tag === 'success' ? createFailure(result.success) : createSuccess(result.failure)
+  isSuccess(result) ? createFailure(result.success) : createSuccess(result.failure)
 
 export type SyncThen = typeof syncThen
 export type AsyncThen = typeof asyncThen
