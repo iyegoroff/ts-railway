@@ -350,7 +350,8 @@ function combine<
  *
  * @param results Functions that return `Result`s to combine
  * @returns A Function that takes an array of arguments and returns a `Result` that holds
- *          a tuple of successes or a single failure
+ *          a tuple of successes or a single failure. If all combined functions have zero arguments
+ *          resulting function also will take zero arguments instead of an array of undefined values
  */
 function combine<
   ResultLike extends Result,
@@ -372,7 +373,11 @@ function combine<
       ? FailureOf<ReturnType<Results[Index]>>
       : never
   }[number]
->(...results: Results): (args: Args) => Result<Successes, Failure>
+>(
+  ...results: Results
+): Args extends CombineArray<undefined>
+  ? () => Result<Successes, Failure>
+  : (args: Args) => Result<Successes, Failure>
 
 function combine<Success, Failure, Arg, ResultLike extends Result<Success, Failure>>(
   ...results: CombineArray<ResultLike> | CombineFunArray<Arg, ResultLike>
@@ -382,7 +387,7 @@ function combine<Success, Failure, Arg, ResultLike extends Result<Success, Failu
         combine(
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-expect-error
-          ...results.map((r, i) => r(args[i]))
+          ...results.map((r, i) => r(args?.[i]))
         )
     : results.reduce<Result<readonly Success[], Failure>>(
         (acc, val) => flatMap((successes) => map((success) => [...successes, success], val), acc),

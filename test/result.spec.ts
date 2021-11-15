@@ -239,4 +239,14 @@ describe('Result', () => {
       ReturnType<typeof combinedSuccess>
     >(Result.success([2, { value: '!!!' }, 'test']))
   })
+
+  test('combine - functions with no args', () => {
+    const combinedSuccess = Result.combine(
+      () => Result.success(1),
+      () => Result.success({ value: '!!!' }),
+      () => Result.success('test')
+    )
+
+    expect(combinedSuccess()).toEqual(Result.success([1, { value: '!!!' }, 'test']))
+  })
 })

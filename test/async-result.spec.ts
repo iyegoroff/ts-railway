@@ -340,4 +340,14 @@ describe('AsyncResult', () => {
       Result.success([2, { value: '!!!' }, 'test'])
     )
   })
+
+  test('combine - functions with no args', async () => {
+    const combinedSuccess = AsyncResult.combine(
+      () => Promise.resolve(Result.success(1)),
+      () => Promise.resolve(Result.success({ value: '!!!' })),
+      () => Promise.resolve(Result.success('test'))
+    )
+
+    expect(await combinedSuccess()).toEqual(Result.success([1, { value: '!!!' }, 'test']))
+  })
 })
