@@ -1,11 +1,13 @@
-import { createSuccess, asyncThen as then, swap, isSuccess } from './utils'
+import { createSuccess, asyncThen as then, swap, isSuccess, isCombineFunArray } from './utils'
 import {
   SuccessOf,
   FailureOf,
   SomeResult,
   AsyncResult as ResultType,
   Matcher,
-  ResultMatcher
+  ResultMatcher,
+  CombineArray,
+  CombineFunArray
 } from './types'
 
 export type AsyncResult<Success = unknown, Failure = unknown> = ResultType<Success, Failure>
@@ -16,7 +18,8 @@ export type AsyncResult<Success = unknown, Failure = unknown> = ResultType<Succe
  *
  * @param transform A closure that takes the success value of the `result`.
  * @param result Original `SomeResult`.
- * @returns An `AsyncResult` value with the result of evaluating `transform` as the new failure value if `result` represents a failure.
+ * @returns An `AsyncResult` value with the result of evaluating `transform` as the new failure
+ *          value if `result` represents a failure.
  */
 function flatMap<
   NewSuccess,
@@ -35,7 +38,8 @@ function flatMap<
  * transformation and unwrapping the produced async result.
  *
  * @param transform A closure that takes the success value of the `result`.
- * @returns A closure that takes a `SomeResult` value with the result of evaluating `transform` as the new failure value if `result` represents a failure.
+ * @returns A closure that takes a `SomeResult` value with the result of evaluating `transform` as
+ *          the new failure value if `result` represents a failure.
  */
 function flatMap<
   NewSuccess,
@@ -68,7 +72,8 @@ function flatMap<NewSuccess, NewFailure, Success, Failure>(
  *
  * @param transform A closure that takes the success value of `result`.
  * @param result Original `SomeResult`.
- * @returns An `AsyncResult` value with the result of evaluating `transform` as the new success value if `result` represents a success.
+ * @returns An `AsyncResult` value with the result of evaluating `transform` as the new success
+ *          value if `result` represents a success.
  */
 function map<
   NewSuccess,
@@ -88,7 +93,8 @@ function map<
  * value when it represents a success.
  *
  * @param transform A closure that takes the success value of `result`.
- * @returns A closure that takes a `SomeResult` value with the result of evaluating `transform` as the new success value if `result` represents a success.
+ * @returns A closure that takes a `SomeResult` value with the result of evaluating `transform` as
+ *          the new success value if `result` represents a success.
  */
 function map<
   NewSuccess,
@@ -131,7 +137,8 @@ function flatMapError<
  * transformation and unwrapping the produced async result.
  *
  * @param transform A closure that takes the failure value of the `result`.
- * @returns A closure that takes a `SomeResult` value, either from the closure or the previous `success`.
+ * @returns A closure that takes a `SomeResult` value, either from the closure or
+ *          the previous`success`.
  */
 function flatMapError<
   NewFailure,
@@ -161,7 +168,8 @@ function flatMapError<NewFailure, Success, Failure>(
  *
  * @param transform A closure that takes the failure value of the `result`.
  * @param result Original `SomeResult`.
- * @returns An `AsyncResult` value with the result of evaluating `transform` as the new failure value if `result` represents a failure.
+ * @returns An `AsyncResult` value with the result of evaluating `transform` as the new failure
+ *          value if `result` represents a failure.
  */
 function mapError<
   NewFailure,
@@ -181,7 +189,8 @@ function mapError<
  * value when it represents a failure.
  *
  * @param transform A closure that takes the failure value of the `result`.
- * @returns A closure that takes `SomeResult` value with the result of evaluating `transform` as the new failure value if `result` represents a failure.
+ * @returns A closure that takes `SomeResult` value with the result of evaluating `transform` as
+ *          the new failure value if `result` represents a failure.
  */
 function mapError<
   NewFailure,
@@ -206,7 +215,8 @@ function mapError<NewFailure, Success, Failure>(
  * or returns a default value if needed transform is not provided
  *
  * @param transform Success & failure transformers and default value
- * @returns A closure that takes a `SomeResult` and returns a promise with transformed wrapped value or default value
+ * @returns A closure that takes a `SomeResult` and returns a promise with transformed wrapped
+ *          value or default value
  */
 function match<ResultLike extends SomeResult, MatcherLike extends Matcher<ResultLike, unknown>>(
   transform: MatcherLike
@@ -234,7 +244,8 @@ function match<ResultLike extends SomeResult, MatcherLike extends Matcher<Result
  * Additional siganture for generic results
  *
  * @param transform Success & failure transformers and default value
- * @returns A closure that takes a `SomeResult` and returns a promise with transformed wrapped value or default value
+ * @returns A closure that takes a `SomeResult` and returns a promise with transformed wrapped
+ *          value or default value
  */
 function match<
   ResultLike extends SomeResult,
@@ -278,14 +289,14 @@ function match<Success, Failure, Match>(
 }
 
 /**
- * Combines multiple results into single one
+ * Combines multiple `SomeResult`s into single `AsyncResult`
  *
  * @param results `SomeResult`s to combine
- * @returns An `AsyncResult` that holds a tuple of `results` successes or a single failure
+ * @returns An `AsyncResult` that holds a tuple of successes or a single failure
  */
 function combine<
   ResultLike extends SomeResult,
-  Results extends readonly [ResultLike, ResultLike, ...(readonly ResultLike[])],
+  Results extends CombineArray<ResultLike>,
   Successes extends {
     readonly [Index in keyof Results]: Results[Index] extends ResultLike
       ? SuccessOf<Results[Index]>
@@ -299,43 +310,49 @@ function combine<
 >(...results: Results): AsyncResult<Successes, Failure>
 
 /**
- * Combines multiple results into single one
+ * Combines multiple functions that have 0-1 arguments return `Result`s into single one that takes
+ * an array of arguments
  *
- * @param combiner A closure to convert a tuple of success cases to different form
- * @param results `SomeResult`s to combine
- * @returns An `AsyncResult` that holds a return value of a `combiner` param or a single failure
+ * @param results Functions that return `Result`s to combine
+ * @returns A Function that takes an array of arguments and returns a `Result` that holds
+ *          a tuple of successes or a single failure
  */
 function combine<
   ResultLike extends SomeResult,
-  Results extends readonly [ResultLike, ResultLike, ...(readonly ResultLike[])],
+  Results extends CombineArray<(arg: never) => ResultLike>,
   Successes extends {
-    readonly [Index in keyof Results]: Results[Index] extends ResultLike
-      ? SuccessOf<Results[Index]>
+    readonly [Index in keyof Results]: Results[Index] extends (arg: infer _) => ResultLike
+      ? SuccessOf<ReturnType<Results[Index]>>
+      : never
+  },
+  Args extends {
+    readonly [Index in keyof Results]: Results[Index] extends (arg: infer Arg) => ResultLike
+      ? unknown extends Arg
+        ? undefined
+        : Arg
       : never
   },
   Failure extends {
-    readonly [Index in keyof Results]: Results[Index] extends ResultLike
-      ? FailureOf<Results[Index]>
+    readonly [Index in keyof Results]: Results[Index] extends (arg: infer _) => ResultLike
+      ? FailureOf<ReturnType<Results[Index]>>
       : never
-  }[number],
-  T
->(combiner: (...successes: Successes) => T, ...results: Results): AsyncResult<T, Failure>
+  }[number]
+>(...results: Results): (args: Args) => AsyncResult<Successes, Failure>
 
-function combine<Success, Failure, ResultLike extends SomeResult<Success, Failure>, T>(
-  combiner: ResultLike | ((...successes: readonly Success[]) => T),
-  ...results: readonly ResultLike[]
+function combine<Success, Failure, Arg, ResultLike extends SomeResult<Success, Failure>>(
+  ...results: CombineArray<ResultLike> | CombineFunArray<Arg, ResultLike>
 ) {
-  const [combinerFun, firstResults] =
-    typeof combiner === 'function'
-      ? [combiner, []]
-      : [(...successes: readonly Success[]) => successes, [combiner]]
-
-  const result = [...firstResults, ...results].reduce<SomeResult<readonly Success[], Failure>>(
-    (acc, val) => flatMap((successes) => map((success) => [...successes, success], val), acc),
-    createSuccess([])
-  )
-
-  return map((successes) => combinerFun(...successes), result)
+  return isCombineFunArray(results)
+    ? (args: CombineArray<Arg>) =>
+        combine(
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-expect-error
+          ...results.map((r, i) => r(args[i]))
+        )
+    : results.reduce<SomeResult<readonly Success[], Failure>>(
+        (acc, val) => flatMap((successes) => map((success) => [...successes, success], val), acc),
+        createSuccess([])
+      )
 }
 
 /**
@@ -347,7 +364,8 @@ function combine<Success, Failure, ResultLike extends SomeResult<Success, Failur
  *
  * @param transform An async closure that takes the success value of `result`.
  * @param result Original `SomeResult`.
- * @returns An `AsyncResult` value with the result of evaluating `transform` as the new success value if `result` represents a success.
+ * @returns An `AsyncResult` value with the result of evaluating `transform` as the new success
+ *          value if `result` represents a success.
  */
 function mapAsync<
   NewSuccess,
@@ -367,7 +385,8 @@ function mapAsync<
  * value when it represents a success.
  *
  * @param transform An async closure that takes the success value of `result`.
- * @returns A closure that takes a `SomeResult` value with the result of evaluating `transform` as the new success value if `result` represents a success.
+ * @returns A closure that takes a `SomeResult` value with the result of evaluating `transform` as
+ *          the new success value if `result` represents a success.
  */
 function mapAsync<
   NewSuccess,
@@ -396,7 +415,8 @@ function mapAsync<NewSuccess, Success, Failure>(
  *
  * @param transform An async closure that takes the failure value of the `result`.
  * @param result Original `SomeResult`.
- * @returns An `AsyncResult` value with the result of evaluating `transform` as the new failure value if `result` represents a failure.
+ * @returns An `AsyncResult` value with the result of evaluating `transform` as the new failure
+ *          value if `result` represents a failure.
  */
 function mapErrorAsync<
   NewFailure,
@@ -416,7 +436,8 @@ function mapErrorAsync<
  * value when it represents a failure.
  *
  * @param transform An async closure that takes the failure value of the `result`.
- * @returns A closure that takes `SomeResult` value with the result of evaluating `transform` as the new failure value if `result` represents a failure.
+ * @returns A closure that takes `SomeResult` value with the result of evaluating `transform` as
+ *          the new failure value if `result` represents a failure.
  */
 function mapErrorAsync<
   NewFailure,

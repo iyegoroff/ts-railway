@@ -198,7 +198,7 @@ describe('Result', () => {
     ).toEqual(Result.failure('y is nan'))
   })
 
-  test('combine - default combiner', () => {
+  test('combine - results', () => {
     const combinedFail = Result.combine(
       Result.success(1),
       Result.failure('fail'),
@@ -217,24 +217,26 @@ describe('Result', () => {
     expect(combinedSuccess).toEqual(Result.success([1, { value: '!!!' }, 'test']))
   })
 
-  test('combine - custom combiner', () => {
+  test('combine - functions', () => {
     const combinedFail = Result.combine(
-      (a, b, c, d) => ({ a, b, c, d }),
-      Result.success(1),
-      Result.failure('fail'),
-      Result.success({ value: '!!!' }),
-      Result.failure({ error: new Error('error') })
+      (x: 1) => Result.success(x),
+      (_: 2) => Result.failure('fail'),
+      (_: 3) => Result.success({ value: '!!!' }),
+      () => Result.failure({ error: new Error('error') })
     )
 
-    expect(combinedFail).toEqual(Result.failure('fail'))
+    expect(combinedFail([1, 2, 3, undefined])).toEqual<ReturnType<typeof combinedFail>>(
+      Result.failure('fail')
+    )
 
     const combinedSuccess = Result.combine(
-      (a, b, c) => ({ a, b, c }),
-      Result.success(1),
-      Result.success({ value: '!!!' }),
-      Result.success('test')
+      (x: 1) => Result.success(x + 1),
+      (y: { readonly value: '!!!' }) => Result.success(y),
+      (z: 'test') => Result.success(z)
     )
 
-    expect(combinedSuccess).toEqual(Result.success({ a: 1, b: { value: '!!!' }, c: 'test' }))
+    expect(combinedSuccess([1, { value: '!!!' }, 'test'])).toEqual<
+      ReturnType<typeof combinedSuccess>
+    >(Result.success([2, { value: '!!!' }, 'test']))
   })
 })

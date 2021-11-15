@@ -53,7 +53,7 @@ describe('Result.map, Result.mapError', () => {
   })
 })
 
-describe('Result.flatMap', () => {
+describe('Result.flatMap, Result.flatMapError', () => {
   const parse = (json: string) => {
     // eslint-disable-next-line functional/no-try-statement
     try {
@@ -142,38 +142,6 @@ describe('Result.flatMap', () => {
 
       expect(success).toEqual<typeof success>(`failure is 321`)
     })
-
-    // test("Result.map - 'pyramid of doom'", () => {
-    //   const result = Result.map(
-    //     (x) => [...x].reverse().join(''),
-    //     Result.map(
-    //       (x) => `${x}`,
-    //       Result.map(
-    //         (x) => x + 234,
-    //         Result.map(
-    //           (x) => ({ divError: x } as const),
-    //           Result.map((x) => x * 2, div(500, 1))
-    //         )
-    //       )
-    //     )
-    //   )
-
-    //   expect(result).toEqual<typeof result>({
-    //     tag: 'success',
-    //     success: '4321'
-    //   })
-    // })
-
-    // test('Result.match - both', () => {
-    //   const success = pipeWith(
-    //     Math.random() > 0.5 ? Result.success(),
-    //     Result.match({
-    //       failure: (x) => `failure is ${x}`
-    //     })
-    //   )
-
-    //   expect(success).toEqual<typeof success>(`failure is 321`)
-    // })
   })
 })
 

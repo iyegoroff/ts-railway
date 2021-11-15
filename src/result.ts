@@ -1,5 +1,20 @@
-import { createFailure, createSuccess, isSuccess, swap, syncThen as then } from './utils'
-import { SuccessOf, FailureOf, Result as ResultType, Matcher, ResultMatcher } from './types'
+import {
+  createFailure,
+  createSuccess,
+  isCombineFunArray,
+  isSuccess,
+  swap,
+  syncThen as then
+} from './utils'
+import {
+  SuccessOf,
+  FailureOf,
+  Result as ResultType,
+  Matcher,
+  ResultMatcher,
+  CombineArray,
+  CombineFunArray
+} from './types'
 
 export type Result<Success = unknown, Failure = unknown> = ResultType<Success, Failure>
 
@@ -9,7 +24,8 @@ export type Result<Success = unknown, Failure = unknown> = ResultType<Success, F
  *
  * @param transform A closure that takes the success value of the `result`.
  * @param result Original `Result`.
- * @returns A `Result` value with the result of evaluating `transform` as the new failure value if `result` represents a failure.
+ * @returns A `Result` value with the result of evaluating `transform` as the new failure value
+ *          if `result` represents a failure.
  */
 function flatMap<
   NewSuccess,
@@ -28,7 +44,8 @@ function flatMap<
  * transformation and unwrapping the produced result.
  *
  * @param transform A closure that takes the success value of the `result`.
- * @returns A closure that takes a `Result` value with the result of evaluating `transform` as the new failure value if `result` represents a failure.
+ * @returns A closure that takes a `Result` value with the result of evaluating `transform` as
+ *          the new failure value if `result` represents a failure.
  */
 function flatMap<
   NewSuccess,
@@ -67,7 +84,8 @@ function flatMap<NewSuccess, NewFailure, Success, Failure>(
  *
  * @param transform A closure that takes the success value of `result`.
  * @param result Original `Result`.
- * @returns A `Result` value with the result of evaluating `transform` as the new success value if `result` represents a success.
+ * @returns A `Result` value with the result of evaluating `transform` as the new success value if
+ *          `result` represents a success.
  */
 function map<
   NewSuccess,
@@ -95,7 +113,8 @@ function map<
  *      // stringResult == Result.success('5')
  *
  * @param transform A closure that takes the success value of `result`.
- * @returns A closure that takes a `Result` value with the result of evaluating `transform` as the new success value if `result` represents a success.
+ * @returns A closure that takes a `Result` value with the result of evaluating `transform` as
+ *          the new success value if `result` represents a success.
  */
 function map<
   NewSuccess,
@@ -139,7 +158,8 @@ function flatMapError<
  * transformation and unwrapping the produced result.
  *
  * @param transform A closure that takes the failure value of the `result`.
- * @returns A closure that takes a `Result` value, either from the closure or the previous `success`.
+ * @returns A closure that takes a `Result` value, either from the closure or
+ *          the previous `success`.
  */
 function flatMapError<
   NewFailure,
@@ -179,7 +199,8 @@ function flatMapError<NewFailure, Success, Failure>(
  *
  *  @param transform A closure that takes the failure value of the `result`.
  *  @param result Original `Result`.
- *  @returns A `Result` value with the result of evaluating `transform` as the new failure value if `result` represents a failure.
+ *  @returns A `Result` value with the result of evaluating `transform` as the new failure value if
+ *           `result` represents a failure.
  */
 function mapError<
   NewFailure,
@@ -209,7 +230,8 @@ function mapError<
  *      // result == Result.failure(DatedError(date: <date>))
  *
  *  @param transform A closure that takes the failure value of the `result`.
- *  @returns A closure that takes `Result` value with the result of evaluating `transform` as the new failure value if `result` represents a failure.
+ *  @returns A closure that takes `Result` value with the result of evaluating `transform` as
+ *           the new failure value if `result` represents a failure.
  */
 function mapError<
   NewFailure,
@@ -302,14 +324,14 @@ function match<Success, Failure, Match>(
 }
 
 /**
- * Combines multiple results into single one
+ * Combines multiple `Result`s into single one
  *
  * @param results `Result`s to combine
- * @returns A `Result` that holds a tuple of `results` successes or a single failure
+ * @returns A `Result` that holds a tuple of successes or a single failure
  */
 function combine<
   ResultLike extends Result,
-  Results extends readonly [ResultLike, ResultLike, ...(readonly ResultLike[])],
+  Results extends CombineArray<ResultLike>,
   Successes extends {
     readonly [Index in keyof Results]: Results[Index] extends ResultLike
       ? SuccessOf<Results[Index]>
@@ -323,43 +345,49 @@ function combine<
 >(...results: Results): Result<Successes, Failure>
 
 /**
- * Combines multiple results into single one
+ * Combines multiple functions that have 0-1 arguments return `Result`s into single one that takes
+ * an array of arguments
  *
- * @param combiner A closure to convert a tuple of success cases to different form
- * @param results `Result`s to combine
- * @returns A `Result` that holds a return value of a `combiner` param or a single failure
+ * @param results Functions that return `Result`s to combine
+ * @returns A Function that takes an array of arguments and returns a `Result` that holds
+ *          a tuple of successes or a single failure
  */
 function combine<
   ResultLike extends Result,
-  Results extends readonly [ResultLike, ResultLike, ...(readonly ResultLike[])],
+  Results extends CombineArray<(arg: never) => ResultLike>,
   Successes extends {
-    readonly [Index in keyof Results]: Results[Index] extends ResultLike
-      ? SuccessOf<Results[Index]>
+    readonly [Index in keyof Results]: Results[Index] extends (arg: infer _) => ResultLike
+      ? SuccessOf<ReturnType<Results[Index]>>
+      : never
+  },
+  Args extends {
+    readonly [Index in keyof Results]: Results[Index] extends (arg: infer Arg) => ResultLike
+      ? unknown extends Arg
+        ? undefined
+        : Arg
       : never
   },
   Failure extends {
-    readonly [Index in keyof Results]: Results[Index] extends ResultLike
-      ? FailureOf<Results[Index]>
+    readonly [Index in keyof Results]: Results[Index] extends (arg: infer _) => ResultLike
+      ? FailureOf<ReturnType<Results[Index]>>
       : never
-  }[number],
-  T
->(combiner: (...successes: Successes) => T, ...results: Results): Result<T, Failure>
+  }[number]
+>(...results: Results): (args: Args) => Result<Successes, Failure>
 
-function combine<Success, Failure, ResultLike extends Result<Success, Failure>, T>(
-  combiner: ResultLike | ((...successes: readonly Success[]) => T),
-  ...results: readonly ResultLike[]
+function combine<Success, Failure, Arg, ResultLike extends Result<Success, Failure>>(
+  ...results: CombineArray<ResultLike> | CombineFunArray<Arg, ResultLike>
 ) {
-  const [combinerFun, firstResults] =
-    typeof combiner === 'function'
-      ? [combiner, []]
-      : [(...successes: readonly Success[]) => successes, [combiner]]
-
-  const result = [...firstResults, ...results].reduce<Result<readonly Success[], Failure>>(
-    (acc, val) => flatMap((successes) => map((success) => [...successes, success], val), acc),
-    createSuccess([])
-  )
-
-  return map((successes) => combinerFun(...successes), result)
+  return isCombineFunArray(results)
+    ? (args: CombineArray<Arg>) =>
+        combine(
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-expect-error
+          ...results.map((r, i) => r(args[i]))
+        )
+    : results.reduce<Result<readonly Success[], Failure>>(
+        (acc, val) => flatMap((successes) => map((success) => [...successes, success], val), acc),
+        createSuccess([])
+      )
 }
 
 export const Result = {

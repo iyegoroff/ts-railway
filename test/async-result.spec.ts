@@ -301,7 +301,7 @@ describe('AsyncResult', () => {
     ).toEqual(Result.failure('y is nan'))
   })
 
-  test('combine - default combiner', async () => {
+  test('combine - results', async () => {
     const combinedFail = AsyncResult.combine(
       Promise.resolve(Result.success(1)),
       Promise.resolve(Result.failure('fail')),
@@ -320,24 +320,24 @@ describe('AsyncResult', () => {
     expect(await combinedSuccess).toEqual(Result.success([1, { value: '!!!' }, 'test']))
   })
 
-  test('combine - custom combiner', async () => {
+  test('combine - functions', async () => {
     const combinedFail = AsyncResult.combine(
-      (a, b, c, d) => ({ a, b, c, d }),
-      Promise.resolve(Result.success(1)),
-      Promise.resolve(Result.failure('fail')),
-      Result.success({ value: '!!!' }),
-      Result.failure({ error: new Error('error') })
+      (x: 1) => Promise.resolve(Result.success(x)),
+      (_: 2) => Promise.resolve(Result.failure('fail')),
+      (_: 3) => Promise.resolve(Result.success({ value: '!!!' })),
+      () => Promise.resolve(Result.failure({ error: new Error('error') }))
     )
 
-    expect(await combinedFail).toEqual(Result.failure('fail'))
+    expect(await combinedFail([1, 2, 3, undefined])).toEqual(Result.failure('fail'))
 
     const combinedSuccess = AsyncResult.combine(
-      (a, b, c) => ({ a, b, c }),
-      Result.success(1),
-      Promise.resolve(Result.success({ value: '!!!' })),
-      Result.success('test')
+      (x: 1) => Promise.resolve(Result.success(x + 1)),
+      (y: { readonly value: '!!!' }) => Promise.resolve(Result.success(y)),
+      (z: 'test') => Promise.resolve(Result.success(z))
     )
 
-    expect(await combinedSuccess).toEqual(Result.success({ a: 1, b: { value: '!!!' }, c: 'test' }))
+    expect(await combinedSuccess([1, { value: '!!!' }, 'test'])).toEqual(
+      Result.success([2, { value: '!!!' }, 'test'])
+    )
   })
 })

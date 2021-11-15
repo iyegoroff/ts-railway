@@ -1,4 +1,11 @@
-import { FailureResult, SuccessResult, SomeResult, Result } from './types'
+import {
+  FailureResult,
+  SuccessResult,
+  SomeResult,
+  Result,
+  CombineFunArray,
+  CombineArray
+} from './types'
 
 /** A success, storing a `Success` value. */
 export const createSuccess = <Success>(success: Success): SuccessResult<Success> => ({
@@ -15,6 +22,10 @@ export const createFailure = <Failure>(failure: Failure): FailureResult<Failure>
 export const isSuccess = <Success, Failure>(
   result: Result<Success, Failure>
 ): result is SuccessResult<Success> => result.tag === 'success'
+
+export const isCombineFunArray = <T, Arg, Return>(
+  array: CombineArray<T> | CombineFunArray<Arg, Return>
+): array is CombineFunArray<Arg, Return> => typeof array[0] === 'function'
 
 export const syncThen = <Success, Failure, Out>(
   result: Result<Success, Failure>,
