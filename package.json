@@ -37,7 +37,9 @@
   "files": [
     "dist",
     "src",
-    "test"
+    "test",
+    "result.md",
+    "async-result.md"
   ],
   "author": "iyegoroff <iegoroff@gmail.com>",
   "license": "MIT",
