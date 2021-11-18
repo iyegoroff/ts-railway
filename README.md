@@ -35,16 +35,16 @@ All mapping functions have at least two overloaded signatures - common `(transfo
 
 |               | Result                                   | AsyncResult                                          |
 | ------------- | ---------------------------------------- | ---------------------------------------------------- |
-| success       | [➡️](./mds/result.md#resultsuccess)      | 🚫                                                   |
-| failure       | [➡️](./mds/result.md#resultfailure)      | 🚫                                                   |
-| map           | [➡️](./mds/result.md#resultmap)          | [➡️](./mds/async-result.md#asyncresultmap)           |
-| mapError      | [➡️](./mds/result.md#resultmaperror)     | [➡️](./mds/async-result.md#asyncresultmaperror)      |
-| flatMap       | [➡️](./mds/result.md#resultflatmap)      | [➡️](./mds/async-result.md#asyncresultflatmap)       |
-| flatMapError  | [➡️](./mds/result.md#resultflatmaperror) | [➡️](./mds/async-result.md#asyncresultflatmaperror)  |
-| mapAsync      | 🚫                                       | [➡️](./mds/async-result.md#asyncresultmapasync)      |
-| mapAsyncError | 🚫                                       | [➡️](./mds/async-result.md#asyncresultmapasyncerror) |
-| match         | [➡️](./mds/result.md#resultmatch)        | [➡️](./mds/async-result.md#asyncresultmatch)         |
-| combine       | [➡️](./mds/result.md#resultcombine)      | [➡️](./mds/async-result.md#asyncresultcombine)       |
+| success       | [↗️](./mds/result.md#resultsuccess)      | 🚫                                                   |
+| failure       | [↗️](./mds/result.md#resultfailure)      | 🚫                                                   |
+| map           | [↗️](./mds/result.md#resultmap)          | [↗️](./mds/async-result.md#asyncresultmap)           |
+| mapError      | [↗️](./mds/result.md#resultmaperror)     | [↗️](./mds/async-result.md#asyncresultmaperror)      |
+| flatMap       | [↗️](./mds/result.md#resultflatmap)      | [↗️](./mds/async-result.md#asyncresultflatmap)       |
+| flatMapError  | [↗️](./mds/result.md#resultflatmaperror) | [↗️](./mds/async-result.md#asyncresultflatmaperror)  |
+| mapAsync      | 🚫                                       | [↗️](./mds/async-result.md#asyncresultmapasync)      |
+| mapAsyncError | 🚫                                       | [↗️](./mds/async-result.md#asyncresultmapasyncerror) |
+| match         | [↗️](./mds/result.md#resultmatch)        | [↗️](./mds/async-result.md#asyncresultmatch)         |
+| combine       | [↗️](./mds/result.md#resultcombine)      | [↗️](./mds/async-result.md#asyncresultcombine)       |
 
 ---
 
