@@ -33,18 +33,18 @@ ROP flavoured Result & AsyncResult types. Based on [Railway oriented programming
 
 All mapping functions have at least two overloaded signatures - common `(transform, result) => new_result` and curried `(transform) => (result) => new_result`. Curried form is intended to be used with some piping function (e.g. [pipe-ts](https://npm.im/pipe-ts)).
 
-|               | Result                       | AsyncResult                        |
-| ------------- | ---------------------------- | ---------------------------------- |
-| success       | [➡️](###Result.success)      | 🚫                                 |
-| failure       | [➡️](###Result.failure)      | 🚫                                 |
-| map           | [➡️](###Result.map)          | [➡️](###AsyncResult.map)           |
-| mapError      | [➡️](###Result.mapError)     | [➡️](###AsyncResult.mapError)      |
-| flatMap       | [➡️](###Result.flatMap)      | [➡️](###AsyncResult.flatMap)       |
-| flatMapError  | [➡️](###Result.flatMapError) | [➡️](###AsyncResult.flatMapError)  |
-| mapAsync      | 🚫                           | [➡️](###AsyncResult.mapAsync)      |
-| mapAsyncError | 🚫                           | [➡️](###AsyncResult.mapAsyncError) |
-| match         | [➡️](###Result.match)        | [➡️](###AsyncResult.match)         |
-| combine       | [➡️](###Result.combine)      | [➡️](###AsyncResult.combine)       |
+|               | Result                    | AsyncResult                     |
+| ------------- | ------------------------- | ------------------------------- |
+| success       | [➡️](#resultsuccess)      | 🚫                              |
+| failure       | [➡️](#resultfailure)      | 🚫                              |
+| map           | [➡️](#resultmap)          | [➡️](#asyncresultmap)           |
+| mapError      | [➡️](#resultmaperror)     | [➡️](#asyncresultmaperror)      |
+| flatMap       | [➡️](#resultflatmap)      | [➡️](#asyncresultflatmap)       |
+| flatMapError  | [➡️](#resultflatmaperror) | [➡️](#asyncresultflatmaperror)  |
+| mapAsync      | 🚫                        | [➡️](#asyncresultmapasync)      |
+| mapAsyncError | 🚫                        | [➡️](#asyncresultmapasyncerror) |
+| match         | [➡️](#resultmatch)        | [➡️](#asyncresultmatch)         |
+| combine       | [➡️](#resultcombine)      | [➡️](#asyncresultcombine)       |
 
 ---
 
