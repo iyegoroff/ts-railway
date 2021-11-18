@@ -17,7 +17,7 @@
     "node": "^12.20.0 || ^14.13.1 || >=16.0.0"
   },
   "scripts": {
-    "preversion": "npm run lint -- --fix && npm run build && npm t && npm run type-coverage && typedoc src/index.ts && touch docs/.nojekyll",
+    "preversion": "npm run lint -- --fix && npm run build && npm t && npm run type-coverage && npm run typedoc",
     "postversion": "git add . && git commit -am lint || : && git push && git push --tags",
     "build:dts": "tsc -p configs/tsconfig.dts.json",
     "build:esm": "tsc -p configs/tsconfig.esm.json",
@@ -25,6 +25,7 @@
     "build": "rm -rf dist && mkdir dist && npm run build:dts && npm run build:esm && npm run build:cjs",
     "watch": "tsc -p . -w",
     "test": "jest",
+    "typedoc": "typedoc src/index.ts && touch docs/.nojekyll",
     "lint": "eslint .",
     "coverage": "codecov",
     "type-coverage": "type-coverage --detail --strict"
@@ -38,8 +39,7 @@
     "dist",
     "src",
     "test",
-    "result.md",
-    "async-result.md"
+    "mds"
   ],
   "author": "iyegoroff <iegoroff@gmail.com>",
   "license": "MIT",

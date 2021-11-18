@@ -33,18 +33,18 @@ ROP flavoured Result & AsyncResult types. Based on [Railway oriented programming
 
 All mapping functions have at least two overloaded signatures - common `(transform, result) => new_result` and curried `(transform) => (result) => new_result`. Curried form is intended to be used with some piping function (e.g. [pipe-ts](https://npm.im/pipe-ts)).
 
-|               | Result                               | AsyncResult                                      |
-| ------------- | ------------------------------------ | ------------------------------------------------ |
-| success       | [➡️](./result.md#resultsuccess)      | 🚫                                               |
-| failure       | [➡️](./result.md#resultfailure)      | 🚫                                               |
-| map           | [➡️](./result.md#resultmap)          | [➡️](./async-result.md#asyncresultmap)           |
-| mapError      | [➡️](./result.md#resultmaperror)     | [➡️](./async-result.md#asyncresultmaperror)      |
-| flatMap       | [➡️](./result.md#resultflatmap)      | [➡️](./async-result.md#asyncresultflatmap)       |
-| flatMapError  | [➡️](./result.md#resultflatmaperror) | [➡️](./async-result.md#asyncresultflatmaperror)  |
-| mapAsync      | 🚫                                   | [➡️](./async-result.md#asyncresultmapasync)      |
-| mapAsyncError | 🚫                                   | [➡️](./async-result.md#asyncresultmapasyncerror) |
-| match         | [➡️](./result.md#resultmatch)        | [➡️](./async-result.md#asyncresultmatch)         |
-| combine       | [➡️](./result.md#resultcombine)      | [➡️](./async-result.md#asyncresultcombine)       |
+|               | Result                                   | AsyncResult                                          |
+| ------------- | ---------------------------------------- | ---------------------------------------------------- |
+| success       | [➡️](./mds/result.md#resultsuccess)      | 🚫                                                   |
+| failure       | [➡️](./mds/result.md#resultfailure)      | 🚫                                                   |
+| map           | [➡️](./mds/result.md#resultmap)          | [➡️](./mds/async-result.md#asyncresultmap)           |
+| mapError      | [➡️](./mds/result.md#resultmaperror)     | [➡️](./mds/async-result.md#asyncresultmaperror)      |
+| flatMap       | [➡️](./mds/result.md#resultflatmap)      | [➡️](./mds/async-result.md#asyncresultflatmap)       |
+| flatMapError  | [➡️](./mds/result.md#resultflatmaperror) | [➡️](./mds/async-result.md#asyncresultflatmaperror)  |
+| mapAsync      | 🚫                                       | [➡️](./mds/async-result.md#asyncresultmapasync)      |
+| mapAsyncError | 🚫                                       | [➡️](./mds/async-result.md#asyncresultmapasyncerror) |
+| match         | [➡️](./mds/result.md#resultmatch)        | [➡️](./mds/async-result.md#asyncresultmatch)         |
+| combine       | [➡️](./mds/result.md#resultcombine)      | [➡️](./mds/async-result.md#asyncresultcombine)       |
 
 ---
 
