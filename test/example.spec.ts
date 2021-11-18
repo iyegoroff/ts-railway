@@ -36,6 +36,27 @@ describe('Result.map, Result.mapError', () => {
     })
   })
 
+  test("Result.map - 'pyramid of doom'", () => {
+    const result = Result.map(
+      (x: string) => [...x].reverse().join(''),
+      Result.map(
+        (x: number) => `${x}`,
+        Result.map(
+          (x: number) => x + 234,
+          Result.mapError(
+            (x: 'div by zero') => ({ divError: x } as const),
+            Result.map((x) => x * 2, div(500, 1))
+          )
+        )
+      )
+    )
+
+    expect(result).toEqual<typeof result>({
+      tag: 'success',
+      success: '4321'
+    })
+  })
+
   test('Result.map - avoiding "pyramid of doom"', () => {
     const result = pipeWith(
       div(500, 1),
@@ -77,26 +98,8 @@ describe('Result.flatMap, Result.flatMapError', () => {
       Result.flatMap(validateUser)
     )
 
-  test('Result.match', () => {
-    // const user = { name: 'User', id: 1 }
-    // const userResponse = { body: JSON.stringify(user) }
-    // const age = { age: 99, id: 1 }
-    // const ageResponse = { body: JSON.stringify(user) }
-    // const r2 = pipeWith(
-    //   combine((x, y, z) => ({ x, y, z }), div(1, 2), getUser(userResponse), div(1, 2)),
-    //   (x) => x
-    // )
-    // const r3 = pipeWith(combine(div(1, 2), getUser(userResponse), div(1, 2)), (x) => x)
-    // const result = pipeWith(
-    //   getUser(userResponse),
-    //   // Result.flatMap((u) => Result.map((a) => [u, a] as const, getUser(ageResponse))),
-    //   // (x) => x
-    //   combine(div(5, 1)),
-    //   (x) => x,
-    //   combine(div(1, 1), (rs, d) => [...rs, d] as const),
-    //   (x) => x
-    // )
-  })
+  const getLanguage = (): Result<'en' | 'ru', 'language not selected'> =>
+    Result.failure('language not selected')
 
   test('Result.flatMap - success', () => {
     const user = { name: 'User', id: 1 }
@@ -120,28 +123,105 @@ describe('Result.flatMap, Result.flatMapError', () => {
     })
   })
 
-  describe('Result.match', () => {
-    test('Result.match - success', () => {
-      const success = pipeWith(
-        Result.success(123),
-        Result.match({
-          success: (x) => `success is ${x}`
-        })
+  test('Result.flatMapError - failure', () => {
+    const result = pipeWith(
+      validateUser('no a valid user'),
+      Result.flatMapError(({ validationError }) =>
+        Result.flatMap(
+          (lang) => Result.failure(lang === 'en' ? validationError : ('Неверный формат' as const)),
+          getLanguage()
+        )
       )
+    )
 
-      expect(success).toEqual<typeof success>(`success is 123`)
+    expect(result).toEqual<typeof result>({
+      tag: 'failure',
+      failure: 'language not selected'
     })
+  })
+})
 
-    test('Result.match - failure', () => {
-      const success = pipeWith(
-        Result.failure(321),
-        Result.match({
-          failure: (x) => `failure is ${x}`
-        })
-      )
+describe('Result.match', () => {
+  const ok = (): Result<'ok', 'err'> => Result.success('ok')
 
-      expect(success).toEqual<typeof success>(`failure is 321`)
-    })
+  test('Result.match - success', () => {
+    const success = pipeWith(
+      Result.success(123),
+      Result.match({
+        success: (x) => `success is ${x}`
+      })
+    )
+
+    expect(success).toEqual<typeof success>(`success is 123`)
+  })
+
+  test('Result.match - failure', () => {
+    const success = pipeWith(
+      Result.failure(321),
+      Result.match({
+        failure: (x) => `failure is ${x}`
+      })
+    )
+
+    expect(success).toEqual<typeof success>(`failure is 321`)
+  })
+
+  test('Result.match - default', () => {
+    const success = pipeWith(
+      ok(),
+      Result.match({
+        failure: (x) => `failure is ${x}`,
+        default: 'not failure'
+      })
+    )
+
+    expect(success).toEqual<typeof success>('not failure')
+  })
+
+  test('Result.match', () => {
+    const success = pipeWith(
+      ok(),
+      Result.match({
+        success: (x) => `success is ${x}`,
+        failure: (x) => `failure is ${x}`
+      })
+    )
+
+    expect(success).toEqual<typeof success>('success is ok')
+  })
+})
+
+describe('Result.combine', () => {
+  const foo = (x: number) => Result.success(x + 1)
+  const bar = (x: string) => Result.success('bar: ' + x)
+
+  test('Result.combine - results success', () => {
+    const success = Result.combine(Result.success(1), Result.success('abc'))
+
+    expect(success).toEqual<typeof success>(Result.success([1, 'abc']))
+  })
+
+  test('Result.combine - results failure', () => {
+    const failure = Result.combine(Result.success(1), Result.failure('abc'))
+
+    expect(failure).toEqual<typeof failure>(Result.failure('abc'))
+  })
+
+  test('Result.combine - functions success', () => {
+    const success = Result.combine(foo, bar)
+
+    expect(success([5, 'test'])).toEqual<ReturnType<typeof success>>(
+      Result.success([6, 'bar: test'])
+    )
+  })
+
+  test('Result.combine - functions no arg', () => {
+    const success = Result.combine(
+      () => Result.success(1),
+      () => Result.success(2)
+    )
+
+    expect(success()).toEqual<ReturnType<typeof success>>(Result.success([1, 2]))
   })
 })
 

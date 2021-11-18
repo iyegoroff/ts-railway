@@ -22,10 +22,10 @@ export type Result<Success = unknown, Failure = unknown> = ResultType<Success, F
  * Returns a new result, mapping any success value using the given
  * transformation and unwrapping the produced result.
  *
- * @param transform A closure that takes the success value of the `result`.
+ * @param transform A function that takes a success value of the `result` and returns another `Result`.
  * @param result Original `Result`.
- * @returns A `Result` value with the result of evaluating `transform` as the new failure value
- *          if `result` represents a failure.
+ * @returns A `Result` value with the result of evaluating `transform` as the new failure value if
+ *          `result` represents a failure.
  */
 function flatMap<
   NewSuccess,
@@ -40,11 +40,25 @@ function flatMap<
 ): Result<SuccessOf<NewResultLike>, FailureOf<NewResultLike | ResultLike>>
 
 /**
- * Returns a closure that takes a new result, mapping any success value using the given
+ * Returns a new result, mapping any success value using the given
  * transformation and unwrapping the produced result.
  *
- * @param transform A closure that takes the success value of the `result`.
- * @returns A closure that takes a `Result` value with the result of evaluating `transform` as
+ * @param transform A function that takes a success value of the `result` and returns another `Result`.
+ * @param result Original `Result`.
+ * @returns A `Result` value with the result of evaluating `transform` as the new failure value if
+ *          `result` represents a failure.
+ */
+function flatMap<NewSuccess, NewFailure, Success, Failure>(
+  transform: (success: Success) => Result<NewSuccess, NewFailure>,
+  result: Result<Success, Failure>
+): Result<NewSuccess, NewFailure | Failure>
+
+/**
+ * Returns a function that takes a new result, mapping any success value using the given
+ * transformation and unwrapping the produced result.
+ *
+ * @param transform A function that takes a success value of the `result`.
+ * @returns A function that takes a `Result` value with the result of evaluating `transform` as
  *          the new failure value if `result` represents a failure.
  */
 function flatMap<
@@ -82,7 +96,7 @@ function flatMap<NewSuccess, NewFailure, Success, Failure>(
  *      const stringResult = Result.map((value) => `${value}`, numberResult)
  *      // stringResult == Result.success('5')
  *
- * @param transform A closure that takes the success value of `result`.
+ * @param transform A function that takes the success value of `result`.
  * @param result Original `Result`.
  * @returns A `Result` value with the result of evaluating `transform` as the new success value if
  *          `result` represents a success.
@@ -98,7 +112,21 @@ function map<
 ): Result<NewSuccess, FailureOf<ResultLike>>
 
 /**
- * Returns a closure that takes a new result, mapping any success value using the given
+ * Returns a new result, mapping any success value using the given
+ * transformation.
+ *
+ * @param transform A function that takes the success value of `result`.
+ * @param result Original `Result`.
+ * @returns A `Result` value with the result of evaluating `transform` as the new success value if
+ *          `result` represents a success.
+ */
+function map<NewSuccess, Success, Failure>(
+  transform: (success: Success) => NewSuccess,
+  result: Result<Success, Failure>
+): Result<NewSuccess, Failure>
+
+/**
+ * Returns a function that takes a new result, mapping any success value using the given
  * transformation.
  *
  * Use this method when you need to transform the value of a `Result`
@@ -112,8 +140,8 @@ function map<
  *      const stringResult = Result.map((value) => `${value}`)(numberResult)
  *      // stringResult == Result.success('5')
  *
- * @param transform A closure that takes the success value of `result`.
- * @returns A closure that takes a `Result` value with the result of evaluating `transform` as
+ * @param transform A function that takes the success value of `result`.
+ * @returns A function that takes a `Result` value with the result of evaluating `transform` as
  *          the new success value if `result` represents a success.
  */
 function map<
@@ -138,9 +166,9 @@ function map<NewSuccess, Success, Failure>(
  * Returns a new result, mapping any failure value using the given
  * transformation and unwrapping the produced result.
  *
- * @param transform A closure that takes the failure value of the `result`.
+ * @param transform A function that takes the failure value of the `result`.
  * @param result Original `Result`.
- * @returns A `Result` value, either from the closure or the previous `success`.
+ * @returns A `Result` value, either from the function or the previous `success`.
  */
 function flatMapError<
   NewFailure,
@@ -154,11 +182,24 @@ function flatMapError<
 ): Result<SuccessOf<ResultLike>, FailureOf<NewResultLike>>
 
 /**
- * Returns a closure that takes a new result, mapping any failure value using the given
+ * Returns a new result, mapping any failure value using the given
  * transformation and unwrapping the produced result.
  *
- * @param transform A closure that takes the failure value of the `result`.
- * @returns A closure that takes a `Result` value, either from the closure or
+ * @param transform A function that takes the failure value of the `result`.
+ * @param result Original `Result`.
+ * @returns A `Result` value, either from the function or the previous `success`.
+ */
+function flatMapError<NewFailure, Success, Failure>(
+  transform: (failure: Failure) => Result<never, NewFailure>,
+  result: Result<Success, Failure>
+): Result<Success, NewFailure>
+
+/**
+ * Returns a function that takes a new result, mapping any failure value using the given
+ * transformation and unwrapping the produced result.
+ *
+ * @param transform A function that takes the failure value of the `result`.
+ * @returns A function that takes a `Result` value, either from the function or
  *          the previous `success`.
  */
 function flatMapError<
@@ -197,7 +238,7 @@ function flatMapError<NewFailure, Success, Failure>(
  *      const resultWithDatedError = Result.mapError((value) => new DatedError(value.message), result)
  *      // result == Result.failure(DatedError(date: <date>))
  *
- *  @param transform A closure that takes the failure value of the `result`.
+ *  @param transform A function that takes the failure value of the `result`.
  *  @param result Original `Result`.
  *  @returns A `Result` value with the result of evaluating `transform` as the new failure value if
  *           `result` represents a failure.
@@ -213,7 +254,21 @@ function mapError<
 ): Result<SuccessOf<ResultLike>, NewFailure>
 
 /**
- * Returns a closure that takes a result, mapping any failure value using the given
+ * Returns a new result, mapping any failure value using the given
+ * transformation.
+ *
+ *  @param transform A function that takes the failure value of the `result`.
+ *  @param result Original `Result`.
+ *  @returns A `Result` value with the result of evaluating `transform` as the new failure value if
+ *           `result` represents a failure.
+ */
+function mapError<NewFailure, Success, Failure>(
+  transform: (failure: Failure) => NewFailure,
+  result: Result<Success, Failure>
+): Result<Success, NewFailure>
+
+/**
+ * Returns a function that takes a result, mapping any failure value using the given
  * transformation.
  *
  * Use this method when you need to transform the value of a `Result`
@@ -229,8 +284,8 @@ function mapError<
  *      const resultWithDatedError = Result.mapError((value) => new DatedError(value.message))(result)
  *      // result == Result.failure(DatedError(date: <date>))
  *
- *  @param transform A closure that takes the failure value of the `result`.
- *  @returns A closure that takes `Result` value with the result of evaluating `transform` as
+ *  @param transform A function that takes the failure value of the `result`.
+ *  @returns A function that takes `Result` value with the result of evaluating `transform` as
  *           the new failure value if `result` represents a failure.
  */
 function mapError<
@@ -252,18 +307,18 @@ function mapError<NewFailure, Success, Failure>(
 }
 
 /**
- * Extracts wrapped value from result and transforms success and failure cases
+ * Unwraps result and transforms success and failure values
  * or returns a default value if needed transform is not provided
  *
  * @param transform Success & failure transformers and default value
- * @returns A closure that takes a `Result` and returns transformed wrapped value or default value
+ * @returns A function that takes a `Result` and returns transformed wrapped value or default value
  */
 function match<ResultLike extends Result, MatcherLike extends Matcher<ResultLike, unknown>>(
   transform: MatcherLike
 ): (result: ResultLike) => MatcherLike extends Matcher<ResultLike, infer Match> ? Match : never
 
 /**
- * Extracts wrapped value from result and transforms success and failure cases
+ * Unwraps result and transforms success and failure values
  * or returns a default value if needed transform is not provided
  *
  * @param transform Success & failure transformers and default value
@@ -276,7 +331,7 @@ function match<ResultLike extends Result, MatcherLike extends Matcher<ResultLike
 ): MatcherLike extends Matcher<ResultLike, infer Match> ? Match : never
 
 /**
- * Extracts wrapped value from result and transforms success and failure cases
+ * Unwraps result and transforms success and failure values
  * or returns a default value if needed transform is not provided
  *
  * Additional siganture for generic results
@@ -294,13 +349,13 @@ function match<
 ): MatcherLike extends Matcher<ResultLike, infer Match> ? Match : never
 
 /**
- * Extracts wrapped value from result and transforms success and failure cases
+ * Unwraps result and transforms success and failure values
  * or returns a default value if needed transform is not provided
  *
  * Additional siganture for generic results
  *
  * @param transform Success & failure transformers and default value
- * @returns A closure that takes a `Result` and returns transformed wrapped value or default value
+ * @returns A function that takes a `Result` and returns transformed wrapped value or default value
  */
 function match<
   ResultLike extends Result,

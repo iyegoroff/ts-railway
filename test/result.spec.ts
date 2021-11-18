@@ -59,10 +59,10 @@ describe('Result', () => {
 
   test('match', () => {
     const ok = Result.success(1)
-    const r1: string = pipeable(ok).pipe(Result.match({ success: (x) => `${x}` })).value
+    const r1 = pipeable(ok).pipe(Result.match({ success: (x) => `${x}` })).value
 
     const err = Result.failure(1)
-    const r2: string = pipeable(err).pipe(Result.match({ failure: (x) => `${x}` })).value
+    const r2 = pipeable(err).pipe(Result.match({ failure: (x) => `${x}` })).value
 
     const def = Math.random() > 0.5 ? Result.success(1) : Result.failure(2)
     const r3 = pipeable(def).pipe(

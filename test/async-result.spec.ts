@@ -134,14 +134,10 @@ describe('AsyncResult', () => {
 
   test('match', async () => {
     const ok = Promise.resolve(Result.success(1))
-    const r1: Promise<string> = pipeable(ok).pipe(
-      AsyncResult.match({ success: (x) => `${x}` })
-    ).value
+    const r1 = pipeable(ok).pipe(AsyncResult.match({ success: (x) => `${x}` })).value
 
     const err = Promise.resolve(Result.failure(1))
-    const r2: Promise<string> = pipeable(err).pipe(
-      AsyncResult.match({ failure: (x) => `${x}` })
-    ).value
+    const r2 = pipeable(err).pipe(AsyncResult.match({ failure: (x) => `${x}` })).value
 
     const def = Promise.resolve(Math.random() > 0.5 ? Result.success(1) : Result.failure(2))
     const r3 = pipeable(def).pipe(

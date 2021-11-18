@@ -16,7 +16,7 @@ export type AsyncResult<Success = unknown, Failure = unknown> = ResultType<Succe
  * Returns a new async result, mapping any success value using the given
  * transformation and unwrapping the produced async result.
  *
- * @param transform A closure that takes the success value of the `result`.
+ * @param transform A function that takes the success value of the `result`.
  * @param result Original `SomeResult`.
  * @returns An `AsyncResult` value with the result of evaluating `transform` as the new failure
  *          value if `result` represents a failure.
@@ -34,11 +34,25 @@ function flatMap<
 ): AsyncResult<SuccessOf<NewResultLike>, FailureOf<NewResultLike | ResultLike>>
 
 /**
- * Returns a closure that takes a new async result, mapping any success value using the given
+ * Returns a new async result, mapping any success value using the given
  * transformation and unwrapping the produced async result.
  *
- * @param transform A closure that takes the success value of the `result`.
- * @returns A closure that takes a `SomeResult` value with the result of evaluating `transform` as
+ * @param transform A function that takes the success value of the `result`.
+ * @param result Original `SomeResult`.
+ * @returns An `AsyncResult` value with the result of evaluating `transform` as the new failure
+ *          value if `result` represents a failure.
+ */
+function flatMap<NewSuccess, NewFailure, Success, Failure>(
+  transform: (success: Success) => SomeResult<NewSuccess, NewFailure>,
+  result: SomeResult<Success, Failure>
+): AsyncResult<NewSuccess, NewFailure | Failure>
+
+/**
+ * Returns a function that takes a new async result, mapping any success value using the given
+ * transformation and unwrapping the produced async result.
+ *
+ * @param transform A function that takes the success value of the `result`.
+ * @returns A function that takes a `SomeResult` value with the result of evaluating `transform` as
  *          the new failure value if `result` represents a failure.
  */
 function flatMap<
@@ -70,7 +84,7 @@ function flatMap<NewSuccess, NewFailure, Success, Failure>(
  * Use this method when you need to transform the value of an `AsyncResult`
  * value when it represents a success.
  *
- * @param transform A closure that takes the success value of `result`.
+ * @param transform A function that takes the success value of `result`.
  * @param result Original `SomeResult`.
  * @returns An `AsyncResult` value with the result of evaluating `transform` as the new success
  *          value if `result` represents a success.
@@ -86,14 +100,31 @@ function map<
 ): AsyncResult<NewSuccess, FailureOf<ResultLike>>
 
 /**
- * Returns a closure that takes a new async result, mapping any success value using the given
+ * Returns a new async result, mapping any success value using the given
  * transformation.
  *
  * Use this method when you need to transform the value of an `AsyncResult`
  * value when it represents a success.
  *
- * @param transform A closure that takes the success value of `result`.
- * @returns A closure that takes a `SomeResult` value with the result of evaluating `transform` as
+ * @param transform A function that takes the success value of `result`.
+ * @param result Original `SomeResult`.
+ * @returns An `AsyncResult` value with the result of evaluating `transform` as the new success
+ *          value if `result` represents a success.
+ */
+function map<NewSuccess, Success, Failure>(
+  transform: (success: Success) => NewSuccess,
+  result: SomeResult<Success, Failure>
+): AsyncResult<NewSuccess, Failure>
+
+/**
+ * Returns a function that takes a new async result, mapping any success value using the given
+ * transformation.
+ *
+ * Use this method when you need to transform the value of an `AsyncResult`
+ * value when it represents a success.
+ *
+ * @param transform A function that takes the success value of `result`.
+ * @returns A function that takes a `SomeResult` value with the result of evaluating `transform` as
  *          the new success value if `result` represents a success.
  */
 function map<
@@ -113,13 +144,14 @@ function map<NewSuccess, Success, Failure>(
     ? (r: SomeResult<Success, Failure>) => map(transform, r)
     : flatMap((value) => createSuccess(transform(value)), result)
 }
+
 /**
  * Returns a new async result, mapping any failure value using the given
  * transformation and unwrapping the produced async result.
  *
- * @param transform A closure that takes the failure value of the `result`.
+ * @param transform A function that takes the failure value of the `result`.
  * @param result Original `SomeResult`.
- * @returns An `AsyncResult` value, either from the closure or the previous `success`.
+ * @returns An `AsyncResult` value, either from the function or the previous `success`.
  */
 function flatMapError<
   NewFailure,
@@ -133,11 +165,24 @@ function flatMapError<
 ): AsyncResult<SuccessOf<ResultLike>, FailureOf<NewResultLike>>
 
 /**
- * Returns a closure that takes a new async result, mapping any failure value using the given
+ * Returns a new async result, mapping any failure value using the given
  * transformation and unwrapping the produced async result.
  *
- * @param transform A closure that takes the failure value of the `result`.
- * @returns A closure that takes a `SomeResult` value, either from the closure or
+ * @param transform A function that takes the failure value of the `result`.
+ * @param result Original `SomeResult`.
+ * @returns An `AsyncResult` value, either from the function or the previous `success`.
+ */
+function flatMapError<NewFailure, Success, Failure>(
+  transform: (failure: Failure) => SomeResult<never, NewFailure>,
+  result: SomeResult<Success, Failure>
+): AsyncResult<Success, NewFailure>
+
+/**
+ * Returns a function that takes a new async result, mapping any failure value using the given
+ * transformation and unwrapping the produced async result.
+ *
+ * @param transform A function that takes the failure value of the `result`.
+ * @returns A function that takes a `SomeResult` value, either from the function or
  *          the previous`success`.
  */
 function flatMapError<
@@ -166,7 +211,7 @@ function flatMapError<NewFailure, Success, Failure>(
  * Use this method when you need to transform the value of an `AsyncResult`
  * value when it represents a failure.
  *
- * @param transform A closure that takes the failure value of the `result`.
+ * @param transform A function that takes the failure value of the `result`.
  * @param result Original `SomeResult`.
  * @returns An `AsyncResult` value with the result of evaluating `transform` as the new failure
  *          value if `result` represents a failure.
@@ -182,14 +227,31 @@ function mapError<
 ): AsyncResult<SuccessOf<ResultLike>, NewFailure>
 
 /**
- * Returns a closure that takes an async result, mapping any failure value using the given
+ * Returns a new async result, mapping any failure value using the given
  * transformation.
  *
  * Use this method when you need to transform the value of an `AsyncResult`
  * value when it represents a failure.
  *
- * @param transform A closure that takes the failure value of the `result`.
- * @returns A closure that takes `SomeResult` value with the result of evaluating `transform` as
+ * @param transform A function that takes the failure value of the `result`.
+ * @param result Original `SomeResult`.
+ * @returns An `AsyncResult` value with the result of evaluating `transform` as the new failure
+ *          value if `result` represents a failure.
+ */
+function mapError<NewFailure, Success, Failure>(
+  transform: (failure: Failure) => NewFailure,
+  result: SomeResult<Success, Failure>
+): AsyncResult<Success, NewFailure>
+
+/**
+ * Returns a function that takes an async result, mapping any failure value using the given
+ * transformation.
+ *
+ * Use this method when you need to transform the value of an `AsyncResult`
+ * value when it represents a failure.
+ *
+ * @param transform A function that takes the failure value of the `result`.
+ * @returns A function that takes `SomeResult` value with the result of evaluating `transform` as
  *          the new failure value if `result` represents a failure.
  */
 function mapError<
@@ -211,11 +273,11 @@ function mapError<NewFailure, Success, Failure>(
 }
 
 /**
- * Extracts wrapped value from result and transforms success and failure cases
+ * Unwraps result and transforms success and failure values
  * or returns a default value if needed transform is not provided
  *
  * @param transform Success & failure transformers and default value
- * @returns A closure that takes a `SomeResult` and returns a promise with transformed wrapped
+ * @returns A function that takes a `SomeResult` and returns a promise with transformed wrapped
  *          value or default value
  */
 function match<ResultLike extends SomeResult, MatcherLike extends Matcher<ResultLike, unknown>>(
@@ -225,7 +287,7 @@ function match<ResultLike extends SomeResult, MatcherLike extends Matcher<Result
 ) => MatcherLike extends Matcher<ResultLike, infer Match> ? Promise<Match> : never
 
 /**
- * Extracts wrapped value from result and transforms success and failure cases
+ * Unwraps result and transforms success and failure values
  * or returns a default value if needed transform is not provided
  *
  * @param transform Success & failure transformers and default value
@@ -238,13 +300,13 @@ function match<ResultLike extends SomeResult, MatcherLike extends Matcher<Result
 ): MatcherLike extends Matcher<ResultLike, infer Match> ? Promise<Match> : never
 
 /**
- * Extracts wrapped value from result and transforms success and failure cases
+ * Unwraps result and transforms success and failure values
  * or returns a default value if needed transform is not provided
  *
  * Additional siganture for generic results
  *
  * @param transform Success & failure transformers and default value
- * @returns A closure that takes a `SomeResult` and returns a promise with transformed wrapped
+ * @returns A function that takes a `SomeResult` and returns a promise with transformed wrapped
  *          value or default value
  */
 function match<
@@ -256,7 +318,7 @@ function match<
 ): MatcherLike extends Matcher<ResultLike, infer Match> ? Promise<Match> : never
 
 /**
- * Extracts wrapped value from result and transforms success and failure cases
+ * Unwraps result and transforms success and failure values
  * or returns a default value if needed transform is not provided
  *
  * Additional siganture for generic results
@@ -367,7 +429,7 @@ function combine<Success, Failure, Arg, ResultLike extends SomeResult<Success, F
  * Use this method when you need to transform the value of an `AsyncResult`
  * value when it represents a success.
  *
- * @param transform An async closure that takes the success value of `result`.
+ * @param transform An async function that takes the success value of `result`.
  * @param result Original `SomeResult`.
  * @returns An `AsyncResult` value with the result of evaluating `transform` as the new success
  *          value if `result` represents a success.
@@ -383,14 +445,31 @@ function mapAsync<
 ): AsyncResult<NewSuccess, FailureOf<ResultLike>>
 
 /**
- * Returns a closure that takes a new async result, mapping any success value using the given
+ * Returns a new async result, mapping any success value using the given
  * transformation.
  *
  * Use this method when you need to transform the value of an `AsyncResult`
  * value when it represents a success.
  *
- * @param transform An async closure that takes the success value of `result`.
- * @returns A closure that takes a `SomeResult` value with the result of evaluating `transform` as
+ * @param transform An async function that takes the success value of `result`.
+ * @param result Original `SomeResult`.
+ * @returns An `AsyncResult` value with the result of evaluating `transform` as the new success
+ *          value if `result` represents a success.
+ */
+function mapAsync<NewSuccess, Success, Failure>(
+  transform: (success: Success) => Promise<NewSuccess>,
+  result: SomeResult<Success, Failure>
+): AsyncResult<NewSuccess, Failure>
+
+/**
+ * Returns a function that takes a new async result, mapping any success value using the given
+ * transformation.
+ *
+ * Use this method when you need to transform the value of an `AsyncResult`
+ * value when it represents a success.
+ *
+ * @param transform An async function that takes the success value of `result`.
+ * @returns A function that takes a `SomeResult` value with the result of evaluating `transform` as
  *          the new success value if `result` represents a success.
  */
 function mapAsync<
@@ -418,7 +497,7 @@ function mapAsync<NewSuccess, Success, Failure>(
  * Use this method when you need to transform the value of an `AsyncResult`
  * value when it represents a failure.
  *
- * @param transform An async closure that takes the failure value of the `result`.
+ * @param transform An async function that takes the failure value of the `result`.
  * @param result Original `SomeResult`.
  * @returns An `AsyncResult` value with the result of evaluating `transform` as the new failure
  *          value if `result` represents a failure.
@@ -434,14 +513,31 @@ function mapErrorAsync<
 ): AsyncResult<SuccessOf<ResultLike>, NewFailure>
 
 /**
- * Returns a closure that takes an async result, mapping any failure value using the given
+ * Returns a new async result, mapping any failure value using the given
  * transformation.
  *
  * Use this method when you need to transform the value of an `AsyncResult`
  * value when it represents a failure.
  *
- * @param transform An async closure that takes the failure value of the `result`.
- * @returns A closure that takes `SomeResult` value with the result of evaluating `transform` as
+ * @param transform An async function that takes the failure value of the `result`.
+ * @param result Original `SomeResult`.
+ * @returns An `AsyncResult` value with the result of evaluating `transform` as the new failure
+ *          value if `result` represents a failure.
+ */
+function mapErrorAsync<NewFailure, Success, Failure>(
+  transform: (failure: Failure) => Promise<NewFailure>,
+  result: SomeResult<Success, Failure>
+): AsyncResult<Success, NewFailure>
+
+/**
+ * Returns a function that takes an async result, mapping any failure value using the given
+ * transformation.
+ *
+ * Use this method when you need to transform the value of an `AsyncResult`
+ * value when it represents a failure.
+ *
+ * @param transform An async function that takes the failure value of the `result`.
+ * @returns A function that takes `SomeResult` value with the result of evaluating `transform` as
  *          the new failure value if `result` represents a failure.
  */
 function mapErrorAsync<

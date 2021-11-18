@@ -60,8 +60,8 @@ export type ResultMatcher<Success, Failure, Match> =
       readonly default?: never
     }
   | {
-      readonly success?: (success: Success) => Match
-      readonly failure?: (failure: Failure) => Match
+      readonly success?: (success: Success) => NonNullable<Match>
+      readonly failure?: (failure: Failure) => NonNullable<Match>
       readonly default: Match
     }
 
