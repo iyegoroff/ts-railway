@@ -55,6 +55,9 @@ All mapping functions have at least two overloaded signatures - common `(transfo
 Composing several functions with multiple arguments can be cumbersome and will lead to 'pyramid of doom' style of code:
 
 ```typescript
+const div = (a: number, b: number) /*: Result<number, 'div by zero'> */ =>
+  b === 0 ? Result.failure('div by zero' as const) : Result.success(a / b)
+
 const result = Result.map(
   (x: string) => [...x].reverse().join(''),
   Result.map(
@@ -133,3 +136,20 @@ MyButton.onClick(
 These kind of problems can be minimized by using proper project configuration: setting `"strict": true` in `tsconfig`,
 prohibiting expression statements with `functional/no-expression-statement` rule from [eslint-plugin-functional](https://npm.im/eslint-plugin-functional) and banning `void` type with `@typescript-eslint/ban-types` rule
 from [@typescript-eslint/eslint-plugin](https://npm.im/@typescript-eslint/eslint-plugin). [tsconfig.json](./tsconfig.json) and [.eslintrc](./.eslintrc) files from this project could be used as a starting point.
+
+---
+
+### Exception handling
+
+`ts-railway` is intended to handle only [domain errors](https://fsharpforfunandprofit.com/posts/against-railway-oriented-programming/#when-should-you-use-result) and doesn't catch thrown exceptions and unhandled promise rejections. The common scenario to deal
+with exceptions is to catch them globally, log somehow and then decide whether to prevent an exception by fixing/changing the
+program or to convert that exception to domain error:
+
+```typescript
+const errorHandler: OnErrorEventHandlerNonNull = (event) => {
+  MyLoggingService.log(event)
+}
+
+window.onerror = errorHandler
+window.onunhandledrejection = errorHandler
+```
