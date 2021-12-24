@@ -71,5 +71,5 @@ export type Matcher<R extends SomeResult, Match> = FailureOf<R> extends never
   ? FailureResultMatcher<FailureOf<R>, Match>
   : ResultMatcher<SuccessOf<R>, FailureOf<R>, Match>
 
-export type CombineArray<T> = readonly [T, T, ...(readonly T[])]
+export type CombineArray<T> = readonly T[]
 export type CombineFunArray<Arg, Return> = CombineArray<(arg: Arg) => Return>
