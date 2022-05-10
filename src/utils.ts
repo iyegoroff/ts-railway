@@ -5,7 +5,7 @@ import {
   Result,
   CombineFunArray,
   CombineArray
-} from './types'
+} from './types.js'
 
 /** A success, storing a `Success` value. */
 export const createSuccess = <Success>(success: Success): SuccessResult<Success> => ({

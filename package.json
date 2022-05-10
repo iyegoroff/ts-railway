@@ -13,6 +13,7 @@
     },
     "./package.json": "./package.json"
   },
+  "type": "module",
   "scripts": {
     "preversion": "npm run lint -- --fix && npm run build && npm t && npm run type-coverage && npm run typedoc",
     "postversion": "git add . && git commit -am \"lint [skip build]\" || : && git push && git push --tags",
@@ -65,6 +66,7 @@
     "prettier": "^2.5.1",
     "runtypes": "^6.5.1",
     "ts-jest": "^27.1.4",
+    "ts-morph": "^14.0.0",
     "ts-pipe": "^1.2.3",
     "type-coverage": "^2.21.1",
     "typedoc": "^0.22.15",
@@ -84,7 +86,10 @@
     },
     "coverageDirectory": "coverage",
     "collectCoverage": true,
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "moduleNameMapper": {
+      "(.+)\\.js$": "$1"
+    }
   },
   "typeCoverage": {
     "atLeast": 100

@@ -1,6 +1,6 @@
-import { Result, AsyncResult } from '../src'
 import { pipeable } from 'ts-pipe'
 import { pipeWith } from 'pipe-ts'
+import { Result, AsyncResult } from '../src'
 
 describe('AsyncResult', () => {
   test('ofResult', async () => {

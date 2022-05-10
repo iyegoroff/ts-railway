@@ -1,4 +1,4 @@
-import { createSuccess, asyncThen as then, swap, isSuccess, isCombineFunArray } from './utils'
+import { createSuccess, asyncThen as then, swap, isSuccess, isCombineFunArray } from './utils.js'
 import {
   SuccessOf,
   FailureOf,
@@ -8,7 +8,7 @@ import {
   ResultMatcher,
   CombineArray,
   CombineFunArray
-} from './types'
+} from './types.js'
 
 export type AsyncResult<Success = unknown, Failure = unknown> = ResultType<Success, Failure>
 

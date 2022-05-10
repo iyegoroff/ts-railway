@@ -19,6 +19,7 @@
     "plugin:@typescript-eslint/recommended-requiring-type-checking"
   ],
   "rules": {
+    "import/extensions": ["error", "always", {"ignorePackages": true}],
     "no-param-reassign": "error",
     "no-shadow": "error",
     "prettier/prettier": "warn",

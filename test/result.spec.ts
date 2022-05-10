@@ -1,6 +1,6 @@
-import { Result } from '../src'
 import { pipeable } from 'ts-pipe'
 import { pipeWith } from 'pipe-ts'
+import { Result } from '../src'
 
 describe('Result', () => {
   test('map success', () => {
