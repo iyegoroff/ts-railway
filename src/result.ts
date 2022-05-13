@@ -5,7 +5,7 @@ import {
   isSuccess,
   swap,
   syncThen as then
-} from './utils.js'
+} from './utils'
 import {
   SuccessOf,
   FailureOf,
@@ -14,7 +14,7 @@ import {
   ResultMatcher,
   CombineArray,
   CombineFunArray
-} from './types.js'
+} from './types'
 
 export type Result<Success = unknown, Failure = unknown> = ResultType<Success, Failure>
 

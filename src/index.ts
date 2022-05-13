@@ -1,3 +1,3 @@
-export { Result } from './result.js'
-export { AsyncResult } from './async-result.js'
-export type { FailureOf, SuccessOf, Matcher, SomeResult } from './types.js'
+export { Result } from './result'
+export { AsyncResult } from './async-result'
+export type { FailureOf, SuccessOf, Matcher, SomeResult } from './types'

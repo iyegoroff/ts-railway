@@ -3,14 +3,12 @@
   "version": "6.0.2",
   "description": "ROP flavoured Result & AsyncResult types",
   "sideEffects": false,
-  "main": "./dist/cjs/index.cjs",
-  "module": "./dist/esm/index.js",
-  "react-native": "./dist/esm/index.js",
-  "types": "./dist/dts/index.d.ts",
+  "types": "./dist/index.d.ts",
+  "main": "./dist/index",
   "exports": {
     ".": {
-      "require": "./dist/cjs/index.cjs",
-      "import": "./dist/esm/index.js"
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.js"
     },
     "./package.json": "./package.json"
   },
@@ -18,11 +16,7 @@
   "scripts": {
     "preversion": "npm run lint -- --fix && npm run build && npm t && npm run type-coverage && npm run typedoc",
     "postversion": "git add . && git commit -am \"lint [skip build]\" || : && git push && git push --tags",
-    "build:dts": "tsc -p configs/tsconfig.dts.json",
-    "build:esm": "tsc -p configs/tsconfig.esm.json",
-    "build:cjs": "build-for-cjs configs/tsconfig.cjs.json",
-    "build": "rm -rf dist && mkdir dist && npm run build:dts && npm run build:esm && npm run build:cjs",
-    "watch": "tsc -p . -w",
+    "build": "rm -rf dist && rollup -c rollup.config.ts --configPlugin typescript && rm -rf tmp",
     "test": "jest",
     "typedoc": "typedoc src/index.ts && touch docs/.nojekyll",
     "lint": "eslint .",
@@ -50,10 +44,10 @@
     "url": "git+https://github.com/iyegoroff/ts-railway.git"
   },
   "devDependencies": {
+    "@rollup/plugin-typescript": "^8.3.2",
     "@types/jest": "^27.4.1",
     "@typescript-eslint/eslint-plugin": "^4.33.0",
     "@typescript-eslint/parser": "^4.33.0",
-    "build-for-cjs": "^0.0.8",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-config-standard-with-typescript": "^21.0.1",
@@ -66,6 +60,8 @@
     "jest": "^27.4.5",
     "pipe-ts": "^0.0.9",
     "prettier": "^2.5.1",
+    "rollup": "^2.72.1",
+    "rollup-plugin-dts": "^4.2.1",
     "runtypes": "^6.5.1",
     "ts-jest": "^27.1.4",
     "ts-pipe": "^1.2.3",
@@ -87,10 +83,7 @@
     },
     "coverageDirectory": "coverage",
     "collectCoverage": true,
-    "testEnvironment": "node",
-    "moduleNameMapper": {
-      "(.+)\\.js$": "$1"
-    }
+    "testEnvironment": "node"
   },
   "typeCoverage": {
     "atLeast": 100

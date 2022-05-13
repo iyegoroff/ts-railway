@@ -74,3 +74,4 @@ typings/
 
 dist
 .vscode
+tmp
