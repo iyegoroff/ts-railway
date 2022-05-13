@@ -4,7 +4,9 @@
   "description": "ROP flavoured Result & AsyncResult types",
   "sideEffects": false,
   "types": "./dist/index.d.ts",
-  "main": "./dist/index",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "react-native": "./dist/index.js",
   "exports": {
     ".": {
       "require": "./dist/index.cjs",
