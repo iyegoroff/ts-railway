@@ -17,7 +17,7 @@
   "type": "module",
   "scripts": {
     "preversion": "npm run lint -- --fix && npm run build && npm t && npm run type-coverage && npm run typedoc",
-    "postversion": "git add . && git commit -am \"lint [skip build]\" || : && git push && git push --tags",
+    "postversion": "git add . && git commit -am \"lint & docs [skip build]\" || : && git push && git push --tags",
     "build": "rm -rf dist && rollup -c rollup.config.ts --configPlugin typescript && rm -rf tmp",
     "test": "jest",
     "typedoc": "typedoc src/index.ts && touch docs/.nojekyll",
