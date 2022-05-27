@@ -1,6 +1,6 @@
 {
   "name": "ts-railway",
-  "version": "6.0.4",
+  "version": "6.0.5",
   "description": "ROP flavoured Result & AsyncResult types",
   "sideEffects": false,
   "types": "./dist/dts/index.d.ts",
