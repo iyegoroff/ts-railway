@@ -48,7 +48,7 @@ All mapping functions have at least two overloaded signatures - common `(transfo
 
 ---
 
-## Misc
+## Usage
 
 ### Avoiding 'pyramid of doom'
 
@@ -153,3 +153,11 @@ const errorHandler: OnErrorEventHandlerNonNull = (event) => {
 window.onerror = errorHandler
 window.onunhandledrejection = errorHandler
 ```
+
+### 'Ecosystem'
+
+Some packages compatible with `ts-railway`:
+
+- [spectypes](https://github.com/iyegoroff/spectypes) - fast, compiled, eval-free data validator/transformer
+- [fetchmap](https://github.com/iyegoroff/fetchmap) - non-throwing fetch wrapper
+- [ts-elmish](https://github.com/iyegoroff/ts-elmish) - elmish architecture in typescript

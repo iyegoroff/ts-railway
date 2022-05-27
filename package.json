@@ -3,14 +3,14 @@
   "version": "6.0.4",
   "description": "ROP flavoured Result & AsyncResult types",
   "sideEffects": false,
-  "types": "./dist/index.d.ts",
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.js",
-  "react-native": "./dist/index.js",
+  "types": "./dist/dts/index.d.ts",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/mjs/index.js",
+  "react-native": "./dist/mjs/index.js",
   "exports": {
     ".": {
-      "require": "./dist/index.cjs",
-      "import": "./dist/index.js"
+      "require": "./dist/cjs/index.js",
+      "default": "./dist/mjs/index.js"
     },
     "./package.json": "./package.json"
   },
@@ -18,7 +18,8 @@
   "scripts": {
     "preversion": "npm run lint -- --fix && npm run build && npm t && npm run type-coverage && npm run typedoc",
     "postversion": "git add . && git commit -am \"lint & docs [skip build]\" || : && git push && git push --tags",
-    "build": "rm -rf dist && rollup -c rollup.config.ts --configPlugin typescript && rm -rf tmp",
+    "build:ts": "tsc -p configs/tsconfig.cjs.json && tsc -p configs/tsconfig.mjs.json && tsc -p configs/tsconfig.dts.json",
+    "build": "rm -rf dist && npm run build:ts && echo '{ \"type\": \"commonjs\" }' >> dist/cjs/package.json",
     "test": "jest",
     "typedoc": "typedoc src/index.ts && touch docs/.nojekyll",
     "lint": "eslint .",
@@ -46,8 +47,7 @@
     "url": "git+https://github.com/iyegoroff/ts-railway.git"
   },
   "devDependencies": {
-    "@rollup/plugin-typescript": "^8.3.2",
-    "@types/jest": "^27.4.1",
+    "@types/jest": "^27.5.1",
     "@typescript-eslint/eslint-plugin": "^4.33.0",
     "@typescript-eslint/parser": "^4.33.0",
     "eslint": "^7.32.0",
@@ -59,30 +59,31 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-promise": "^5.1.1",
-    "jest": "^27.4.5",
+    "jest": "^28.1.0",
     "pipe-ts": "^0.0.9",
-    "prettier": "^2.5.1",
-    "rollup": "^2.72.1",
-    "rollup-plugin-dts": "^4.2.1",
+    "prettier": "^2.6.2",
     "runtypes": "^6.5.1",
-    "ts-jest": "^27.1.4",
+    "ts-jest": "^28.0.3",
     "ts-pipe": "^1.2.3",
     "type-coverage": "^2.21.1",
     "typedoc": "^0.22.15",
-    "typescript": "^4.6.3"
+    "typescript": "^4.6.4"
   },
   "jest": {
     "moduleFileExtensions": [
       "js",
       "ts"
     ],
-    "testPathIgnorePatterns": [
-      "blueprint-templates"
-    ],
-    "testRegex": "\\.spec\\.ts$",
     "transform": {
       "^.+\\.(js|tsx?)$": "ts-jest"
     },
+    "testPathIgnorePatterns": [
+      "blueprint-templates"
+    ],
+    "moduleNameMapper": {
+      "(.*)\\.js$": "$1"
+    },
+    "testRegex": "\\.spec\\.ts$",
     "coverageDirectory": "coverage",
     "collectCoverage": true,
     "testEnvironment": "node"
