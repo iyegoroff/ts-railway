@@ -154,6 +154,8 @@ window.onerror = errorHandler
 window.onunhandledrejection = errorHandler
 ```
 
+---
+
 ### 'Ecosystem'
 
 Some packages compatible with `ts-railway`:
