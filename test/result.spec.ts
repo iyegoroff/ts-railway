@@ -151,12 +151,9 @@ describe('Result', () => {
       Result.success('op is <')
     )
 
-    expect(
-      pipeWith(
-        foo(3, 2),
-        Result.map((x) => `op is ${x.op}`)
-      )
-    ).toEqual(Result.success('op is >'))
+    expect(pipeWith(foo(3, 2), (xs) => Result.map((x) => `op is ${x.op}`, xs))).toEqual(
+      Result.success('op is >')
+    )
 
     expect(Result.map((x) => `op is ${x.op}`, foo(2, 2))).toEqual(Result.success('op is ==='))
 
