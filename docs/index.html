@@ -140,6 +140,7 @@ with exceptions is to catch them globally, log somehow and then decide whether t
 program or to convert that exception to domain error:</p>
 <pre><code class="language-typescript"><span class="hl-1">const</span><span class="hl-0"> </span><span class="hl-2">errorHandler</span><span class="hl-0">: </span><span class="hl-3">OnErrorEventHandlerNonNull</span><span class="hl-0"> = (</span><span class="hl-6">event</span><span class="hl-0">) </span><span class="hl-1">=&gt;</span><span class="hl-0"> {</span><br/><span class="hl-0">  </span><span class="hl-6">MyLoggingService</span><span class="hl-0">.</span><span class="hl-2">log</span><span class="hl-0">(</span><span class="hl-6">event</span><span class="hl-0">)</span><br/><span class="hl-0">}</span><br/><br/><span class="hl-6">window</span><span class="hl-0">.</span><span class="hl-6">onerror</span><span class="hl-0"> = </span><span class="hl-6">errorHandler</span><br/><span class="hl-6">window</span><span class="hl-0">.</span><span class="hl-6">onunhandledrejection</span><span class="hl-0"> = </span><span class="hl-6">errorHandler</span>
 </code></pre>
+<hr>
 
 <a href="#39ecosystem39" id="39ecosystem39" style="color: inherit; text-decoration: none;">
   <h3>&#39;Ecosystem&#39;</h3>
