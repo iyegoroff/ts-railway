@@ -73,13 +73,3 @@ export type Matcher<R extends SomeResult, Match> = FailureOf<R> extends never
 
 export type CombineArray<T> = readonly T[]
 export type CombineFunArray<Arg, Return> = CombineArray<(arg: Arg) => Return>
-
-export type HasNever<T1 = unknown, T2 = unknown, T3 = unknown, T4 = unknown> = T1 extends never
-  ? true
-  : T2 extends never
-  ? true
-  : T3 extends never
-  ? true
-  : T4 extends never
-  ? true
-  : false

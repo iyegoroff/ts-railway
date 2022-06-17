@@ -13,11 +13,43 @@ import {
   Matcher,
   ResultMatcher,
   CombineArray,
-  CombineFunArray,
-  HasNever
+  CombineFunArray
 } from './types.js'
 
 export type Result<Success = unknown, Failure = unknown> = ResultType<Success, Failure>
+
+/**
+ * Returns a function that takes a new result, mapping any success value using the given
+ * transformation and unwrapping the produced result.
+ *
+ * @param transform A function that takes a success value of the `result`.
+ * @returns A function that takes a `Result` value with the result of evaluating `transform` as
+ *          the new failure value if `result` represents a failure.
+ */
+function flatMap<
+  NewSuccess,
+  NewFailure,
+  Success,
+  Failure,
+  NewResultLike extends Result<NewSuccess, NewFailure> = Result<NewSuccess, NewFailure>,
+  ResultLike extends Result<Success, Failure> = Result<Success, Failure>
+>(
+  transform: (success: SuccessOf<ResultLike>) => NewResultLike
+): (result: ResultLike) => Result<SuccessOf<NewResultLike>, FailureOf<NewResultLike | ResultLike>>
+
+/**
+ * Returns a function that takes a new result, mapping any success value using the given
+ * transformation and unwrapping the produced result.
+ *
+ * @param transform A function that takes a success value of the `result`.
+ * @returns A function that takes a `Result` value with the result of evaluating `transform` as
+ *          the new failure value if `result` represents a failure.
+ */
+function flatMap<Transform extends (success: never) => Result>(
+  transform: Transform
+): <Failure>(
+  result: Result<Parameters<Transform>[0], Failure>
+) => Result<SuccessOf<ReturnType<Transform>>, FailureOf<ReturnType<Transform>> | Failure>
 
 /**
  * Returns a new result, mapping any success value using the given
@@ -54,39 +86,6 @@ function flatMap<NewSuccess, NewFailure, Success, Failure>(
   result: Result<Success, Failure>
 ): Result<NewSuccess, NewFailure | Failure>
 
-/**
- * Returns a function that takes a new result, mapping any success value using the given
- * transformation and unwrapping the produced result.
- *
- * @param transform A function that takes a success value of the `result`.
- * @returns A function that takes a `Result` value with the result of evaluating `transform` as
- *          the new failure value if `result` represents a failure.
- */
-function flatMap<NewSuccess, NewFailure, Success, Failure>(
-  transform: HasNever<NewSuccess, NewFailure, Success, Failure> extends false
-    ? (success: Success) => Result<NewSuccess, NewFailure>
-    : never
-): (result: Result<Success, Failure>) => Result<NewSuccess, NewFailure | Failure>
-
-/**
- * Returns a function that takes a new result, mapping any success value using the given
- * transformation and unwrapping the produced result.
- *
- * @param transform A function that takes a success value of the `result`.
- * @returns A function that takes a `Result` value with the result of evaluating `transform` as
- *          the new failure value if `result` represents a failure.
- */
-function flatMap<
-  NewSuccess,
-  NewFailure,
-  Success,
-  Failure,
-  NewResultLike extends Result<NewSuccess, NewFailure> = Result<NewSuccess, NewFailure>,
-  ResultLike extends Result<Success, Failure> = Result<Success, Failure>
->(
-  transform: (success: SuccessOf<ResultLike>) => NewResultLike
-): (result: ResultLike) => Result<SuccessOf<NewResultLike>, FailureOf<NewResultLike | ResultLike>>
-
 function flatMap<NewSuccess, NewFailure, Success, Failure>(
   transform: (success: Success) => Result<NewSuccess, NewFailure>,
   result?: Result<Success, Failure>
@@ -95,6 +94,59 @@ function flatMap<NewSuccess, NewFailure, Success, Failure>(
     ? (r: Result<Success, Failure>) => flatMap(transform, r)
     : then(result, (r) => (isSuccess(r) ? transform(r.success) : r))
 }
+
+/**
+ * Returns a function that takes a new result, mapping any success value using the given
+ * transformation.
+ *
+ * Use this method when you need to transform the value of a `Result`
+ * value when it represents a success. The following example transforms
+ * the number success value of a result into a string:
+ *
+ *      function getNextNumber(): Result<number, Error> { ... }
+ *
+ *      const numberResult = getNextNumber()
+ *      // numberResult == Result.success(5)
+ *      const stringResult = Result.map((value) => `${value}`)(numberResult)
+ *      // stringResult == Result.success('5')
+ *
+ * @param transform A function that takes the success value of `result`.
+ * @returns A function that takes a `Result` value with the result of evaluating `transform` as
+ *          the new success value if `result` represents a success.
+ */
+function map<
+  NewSuccess,
+  Success,
+  Failure,
+  ResultLike extends Result<Success, Failure> = Result<Success, Failure>
+>(
+  transform: (success: SuccessOf<ResultLike>) => NewSuccess
+): (result: ResultLike) => Result<NewSuccess, FailureOf<ResultLike>>
+
+/**
+ * Returns a function that takes a new result, mapping any success value using the given
+ * transformation.
+ *
+ * Use this method when you need to transform the value of a `Result`
+ * value when it represents a success. The following example transforms
+ * the number success value of a result into a string:
+ *
+ *      function getNextNumber(): Result<number, Error> { ... }
+ *
+ *      const numberResult = getNextNumber()
+ *      // numberResult == Result.success(5)
+ *      const stringResult = Result.map((value) => `${value}`)(numberResult)
+ *      // stringResult == Result.success('5')
+ *
+ * @param transform A function that takes the success value of `result`.
+ * @returns A function that takes a `Result` value with the result of evaluating `transform` as
+ *          the new success value if `result` represents a success.
+ */
+function map<Transform extends (success: never) => unknown>(
+  transform: Transform
+): <Failure>(
+  result: Result<Parameters<Transform>[0], Failure>
+) => Result<ReturnType<Transform>, Failure>
 
 /**
  * Returns a new result, mapping any success value using the given
@@ -140,59 +192,6 @@ function map<NewSuccess, Success, Failure>(
   result: Result<Success, Failure>
 ): Result<NewSuccess, Failure>
 
-/**
- * Returns a function that takes a new result, mapping any success value using the given
- * transformation.
- *
- * Use this method when you need to transform the value of a `Result`
- * value when it represents a success. The following example transforms
- * the number success value of a result into a string:
- *
- *      function getNextNumber(): Result<number, Error> { ... }
- *
- *      const numberResult = getNextNumber()
- *      // numberResult == Result.success(5)
- *      const stringResult = Result.map((value) => `${value}`)(numberResult)
- *      // stringResult == Result.success('5')
- *
- * @param transform A function that takes the success value of `result`.
- * @returns A function that takes a `Result` value with the result of evaluating `transform` as
- *          the new success value if `result` represents a success.
- */
-function map<NewSuccess, Success, Failure>(
-  transform: HasNever<NewSuccess, Success, Failure> extends false
-    ? (success: Success) => NewSuccess
-    : never
-): (result: Result<Success, Failure>) => Result<NewSuccess, Failure>
-
-/**
- * Returns a function that takes a new result, mapping any success value using the given
- * transformation.
- *
- * Use this method when you need to transform the value of a `Result`
- * value when it represents a success. The following example transforms
- * the number success value of a result into a string:
- *
- *      function getNextNumber(): Result<number, Error> { ... }
- *
- *      const numberResult = getNextNumber()
- *      // numberResult == Result.success(5)
- *      const stringResult = Result.map((value) => `${value}`)(numberResult)
- *      // stringResult == Result.success('5')
- *
- * @param transform A function that takes the success value of `result`.
- * @returns A function that takes a `Result` value with the result of evaluating `transform` as
- *          the new success value if `result` represents a success.
- */
-function map<
-  NewSuccess,
-  Success,
-  Failure,
-  ResultLike extends Result<Success, Failure> = Result<Success, Failure>
->(
-  transform: (success: SuccessOf<ResultLike>) => NewSuccess
-): (result: ResultLike) => Result<NewSuccess, FailureOf<ResultLike>>
-
 function map<NewSuccess, Success, Failure>(
   transform: (success: Success) => NewSuccess,
   result?: Result<Success, Failure>
@@ -201,6 +200,38 @@ function map<NewSuccess, Success, Failure>(
     ? (r: Result<Success, Failure>) => map(transform, r)
     : flatMap((value) => createSuccess(transform(value)), result)
 }
+
+/**
+ * Returns a function that takes a new result, mapping any failure value using the given
+ * transformation and unwrapping the produced result.
+ *
+ * @param transform A function that takes the failure value of the `result`.
+ * @returns A function that takes a `Result` value, either from the function or
+ *          the previous `success`.
+ */
+function flatMapError<
+  NewFailure,
+  Success,
+  Failure,
+  NewResultLike extends Result<never, NewFailure> = Result<never, NewFailure>,
+  ResultLike extends Result<Success, Failure> = Result<Success, Failure>
+>(
+  transform: (failure: FailureOf<ResultLike>) => NewResultLike
+): (result: ResultLike) => Result<SuccessOf<ResultLike>, FailureOf<NewResultLike>>
+
+/**
+ * Returns a function that takes a new result, mapping any failure value using the given
+ * transformation and unwrapping the produced result.
+ *
+ * @param transform A function that takes the failure value of the `result`.
+ * @returns A function that takes a `Result` value, either from the function or
+ *          the previous `success`.
+ */
+function flatMapError<Transform extends (failure: never) => Result<never, unknown>>(
+  transform: Transform
+): <Success>(
+  result: Result<Success, Parameters<Transform>[0]>
+) => Result<Success, FailureOf<ReturnType<Transform>>>
 
 /**
  * Returns a new result, mapping any failure value using the given
@@ -234,38 +265,6 @@ function flatMapError<NewFailure, Success, Failure>(
   result: Result<Success, Failure>
 ): Result<Success, NewFailure>
 
-/**
- * Returns a function that takes a new result, mapping any failure value using the given
- * transformation and unwrapping the produced result.
- *
- * @param transform A function that takes the failure value of the `result`.
- * @returns A function that takes a `Result` value, either from the function or
- *          the previous `success`.
- */
-function flatMapError<NewFailure, Success, Failure>(
-  transform: HasNever<NewFailure, Success, Failure> extends false
-    ? (failure: Failure) => Result<never, NewFailure>
-    : never
-): (result: Result<Success, Failure>) => Result<Success, NewFailure>
-
-/**
- * Returns a function that takes a new result, mapping any failure value using the given
- * transformation and unwrapping the produced result.
- *
- * @param transform A function that takes the failure value of the `result`.
- * @returns A function that takes a `Result` value, either from the function or
- *          the previous `success`.
- */
-function flatMapError<
-  NewFailure,
-  Success,
-  Failure,
-  NewResultLike extends Result<never, NewFailure> = Result<never, NewFailure>,
-  ResultLike extends Result<Success, Failure> = Result<Success, Failure>
->(
-  transform: (failure: FailureOf<ResultLike>) => NewResultLike
-): (result: ResultLike) => Result<SuccessOf<ResultLike>, FailureOf<NewResultLike>>
-
 function flatMapError<NewFailure, Success, Failure>(
   transform: (failure: Failure) => Result<never, NewFailure>,
   result?: Result<Success, Failure>
@@ -274,6 +273,63 @@ function flatMapError<NewFailure, Success, Failure>(
     ? (r: Result<Success, Failure>) => flatMapError(transform, r)
     : then(result, (r) => (isSuccess(r) ? r : transform(r.failure)))
 }
+
+/**
+ * Returns a function that takes a result, mapping any failure value using the given
+ * transformation.
+ *
+ * Use this method when you need to transform the value of a `Result`
+ * value when it represents a failure. The following example transforms
+ * the error value of a result by wrapping it in a custom `Error` type:
+ *
+ *      class DatedError extends Error {
+ *        readonly date: Date = new Date()
+ *      }
+ *
+ *      const result: Result<number, Error> = // ...
+ *      // result == Result.failure(<error value>)
+ *      const resultWithDatedError = Result.mapError((value) => new DatedError(value.message))(result)
+ *      // result == Result.failure(DatedError(date: <date>))
+ *
+ *  @param transform A function that takes the failure value of the `result`.
+ *  @returns A function that takes `Result` value with the result of evaluating `transform` as
+ *           the new failure value if `result` represents a failure.
+ */
+function mapError<
+  NewFailure,
+  Success,
+  Failure,
+  ResultLike extends Result<Success, Failure> = Result<Success, Failure>
+>(
+  transform: (failure: FailureOf<ResultLike>) => NewFailure
+): (result: ResultLike) => Result<SuccessOf<ResultLike>, NewFailure>
+
+/**
+ * Returns a function that takes a result, mapping any failure value using the given
+ * transformation.
+ *
+ * Use this method when you need to transform the value of a `Result`
+ * value when it represents a failure. The following example transforms
+ * the error value of a result by wrapping it in a custom `Error` type:
+ *
+ *      class DatedError extends Error {
+ *        readonly date: Date = new Date()
+ *      }
+ *
+ *      const result: Result<number, Error> = // ...
+ *      // result == Result.failure(<error value>)
+ *      const resultWithDatedError = Result.mapError((value) => new DatedError(value.message))(result)
+ *      // result == Result.failure(DatedError(date: <date>))
+ *
+ *  @param transform A function that takes the failure value of the `result`.
+ *  @returns A function that takes `Result` value with the result of evaluating `transform` as
+ *           the new failure value if `result` represents a failure.
+ */
+function mapError<Transform extends (failure: never) => unknown>(
+  transform: Transform
+): <Success>(
+  result: Result<Success, Parameters<Transform>[0]>
+) => Result<Success, ReturnType<Transform>>
 
 /**
  * Returns a new result, mapping any failure value using the given
@@ -320,63 +376,6 @@ function mapError<NewFailure, Success, Failure>(
   transform: (failure: Failure) => NewFailure,
   result: Result<Success, Failure>
 ): Result<Success, NewFailure>
-
-/**
- * Returns a function that takes a result, mapping any failure value using the given
- * transformation.
- *
- * Use this method when you need to transform the value of a `Result`
- * value when it represents a failure. The following example transforms
- * the error value of a result by wrapping it in a custom `Error` type:
- *
- *      class DatedError extends Error {
- *        readonly date: Date = new Date()
- *      }
- *
- *      const result: Result<number, Error> = // ...
- *      // result == Result.failure(<error value>)
- *      const resultWithDatedError = Result.mapError((value) => new DatedError(value.message))(result)
- *      // result == Result.failure(DatedError(date: <date>))
- *
- *  @param transform A function that takes the failure value of the `result`.
- *  @returns A function that takes `Result` value with the result of evaluating `transform` as
- *           the new failure value if `result` represents a failure.
- */
-function mapError<NewFailure, Success, Failure>(
-  transform: HasNever<NewFailure, Success, Failure> extends false
-    ? (failure: Failure) => NewFailure
-    : never
-): (result: Result<Success, Failure>) => Result<Success, NewFailure>
-
-/**
- * Returns a function that takes a result, mapping any failure value using the given
- * transformation.
- *
- * Use this method when you need to transform the value of a `Result`
- * value when it represents a failure. The following example transforms
- * the error value of a result by wrapping it in a custom `Error` type:
- *
- *      class DatedError extends Error {
- *        readonly date: Date = new Date()
- *      }
- *
- *      const result: Result<number, Error> = // ...
- *      // result == Result.failure(<error value>)
- *      const resultWithDatedError = Result.mapError((value) => new DatedError(value.message))(result)
- *      // result == Result.failure(DatedError(date: <date>))
- *
- *  @param transform A function that takes the failure value of the `result`.
- *  @returns A function that takes `Result` value with the result of evaluating `transform` as
- *           the new failure value if `result` represents a failure.
- */
-function mapError<
-  NewFailure,
-  Success,
-  Failure,
-  ResultLike extends Result<Success, Failure> = Result<Success, Failure>
->(
-  transform: (failure: FailureOf<ResultLike>) => NewFailure
-): (result: ResultLike) => Result<SuccessOf<ResultLike>, NewFailure>
 
 function mapError<NewFailure, Success, Failure>(
   transform: (failure: Failure) => NewFailure,
