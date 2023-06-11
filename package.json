@@ -16,7 +16,7 @@
   },
   "type": "module",
   "scripts": {
-    "preversion": "npm run lint -- --fix && npm run build && npm t && npm run type-coverage && npm run typedoc",
+    "preversion": "npm run lint -- --fix && npm run build && npm t && npm run type-coverage && npm run typedoc && npm run update-deps-badge && npm run update-bundlejs-badge",
     "postversion": "git add . && git commit -am \"lint & docs [skip build]\" || : && git push && git push --tags",
     "build:ts": "tsc -p configs/tsconfig.cjs.json && tsc -p configs/tsconfig.mjs.json && tsc -p configs/tsconfig.dts.json",
     "build": "rm -rf dist && npm run build:ts && echo '{ \"type\": \"commonjs\" }' >> dist/cjs/package.json",
@@ -24,7 +24,8 @@
     "typedoc": "typedoc src/index.ts && touch docs/.nojekyll",
     "lint": "eslint .",
     "type-coverage": "type-coverage --detail --strict",
-    "update-readme": "replace-in-file '/(release/npm/ts-railway/)([^\\)]*)/g' '$1'$npm_new_version README.md --isRegex"
+    "update-deps-badge": "replace-in-file '/(release/npm/ts-railway)([^\\)]*)/g' '$1/'$npm_new_version README.md --isRegex",
+    "update-bundlejs-badge": "replace-in-file '/(ts-railway@)([^,]*)(,ts-railway@)([^\\&]*)/g' '$1'$npm_new_version'$3'$npm_new_version README.md --isRegex"
   },
   "keywords": [
     "result",
