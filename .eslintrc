@@ -4,16 +4,11 @@
   "parserOptions": {
     "project": "./tsconfig.json"
   },
-  "plugins": [
-    "@typescript-eslint",
-    "prettier",
-    "no-null",
-    "functional"
-  ],
+  "plugins": ["@typescript-eslint", "prettier", "no-null", "functional"],
   "extends": [
     "standard-with-typescript",
     "prettier",
-    "plugin:functional/external-recommended",
+    "plugin:functional/external-typescript-recommended",
     "plugin:functional/recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:@typescript-eslint/recommended-requiring-type-checking"
@@ -23,12 +18,15 @@
     "no-shadow": "error",
     "prettier/prettier": "warn",
     "no-null/no-null": "error",
-    "@typescript-eslint/ban-types": ["error", {
-      "types": {
-        "null": null,
-        "void": null
+    "@typescript-eslint/ban-types": [
+      "error",
+      {
+        "types": {
+          "null": null,
+          "void": null
+        }
       }
-    }],
+    ],
     "@typescript-eslint/no-explicit-any": "error",
     "@typescript-eslint/no-unsafe-argument": "error",
     "@typescript-eslint/no-non-null-assertion": "error",
@@ -48,9 +46,12 @@
     ],
     "@typescript-eslint/promise-function-async": "off",
     "functional/functional-parameters": "off",
-    "functional/no-conditional-statement": ["error", {
-      "allowReturningBranches": true
-    }],
+    "functional/no-conditional-statement": [
+      "error",
+      {
+        "allowReturningBranches": true
+      }
+    ],
     "functional/no-expression-statement": [
       "error",
       {
