@@ -1,10 +1,10 @@
 import {
-  FailureResult,
-  SuccessResult,
-  SomeResult,
-  Result,
-  CombineFunArray,
-  CombineArray
+  type FailureResult,
+  type SuccessResult,
+  type SomeResult,
+  type Result,
+  type CombineFunArray,
+  type CombineArray
 } from './types.js'
 
 /** A success, storing a `Success` value. */

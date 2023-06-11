@@ -76,7 +76,6 @@ describe('Result.map, Result.mapError', () => {
 
 describe('Result.flatMap, Result.flatMapError', () => {
   const parse = (json: string) => {
-    // eslint-disable-next-line functional/no-try-statement
     try {
       return Result.success<unknown>(JSON.parse(json))
     } catch (error) {

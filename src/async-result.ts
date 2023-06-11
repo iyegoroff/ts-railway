@@ -1,13 +1,13 @@
 import { createSuccess, asyncThen as then, swap, isSuccess, isCombineFunArray } from './utils.js'
 import {
-  SuccessOf,
-  FailureOf,
-  SomeResult,
-  AsyncResult as ResultType,
-  Matcher,
-  ResultMatcher,
-  CombineArray,
-  CombineFunArray
+  type SuccessOf,
+  type FailureOf,
+  type SomeResult,
+  type AsyncResult as ResultType,
+  type Matcher,
+  type ResultMatcher,
+  type CombineArray,
+  type CombineFunArray
 } from './types.js'
 
 export type AsyncResult<Success = unknown, Failure = unknown> = ResultType<Success, Failure>

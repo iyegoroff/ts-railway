@@ -7,13 +7,13 @@ import {
   syncThen as then
 } from './utils.js'
 import {
-  SuccessOf,
-  FailureOf,
-  Result as ResultType,
-  Matcher,
-  ResultMatcher,
-  CombineArray,
-  CombineFunArray
+  type SuccessOf,
+  type FailureOf,
+  type Result as ResultType,
+  type Matcher,
+  type ResultMatcher,
+  type CombineArray,
+  type CombineFunArray
 } from './types.js'
 
 export type Result<Success = unknown, Failure = unknown> = ResultType<Success, Failure>
