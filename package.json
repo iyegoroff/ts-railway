@@ -3,14 +3,13 @@
   "version": "6.1.3",
   "description": "ROP flavoured Result & AsyncResult types",
   "sideEffects": false,
-  "types": "./dist/dts/index.d.ts",
   "main": "./dist/cjs/index.js",
   "module": "./dist/mjs/index.js",
   "react-native": "./dist/mjs/index.js",
   "exports": {
     ".": {
       "require": "./dist/cjs/index.js",
-      "default": "./dist/mjs/index.js"
+      "import": "./dist/mjs/index.js"
     },
     "./package.json": "./package.json"
   },
@@ -18,7 +17,7 @@
   "scripts": {
     "preversion": "npm run lint -- --fix && npm run build && npm t && npm run type-coverage && npm run typedoc && npm run update-deps-badge && npm run update-bundlejs-badge",
     "postversion": "git add . && git commit -am \"lint & docs [skip build]\" || : && git push && git push --tags",
-    "build:ts": "tsc -p configs/tsconfig.cjs.json && tsc -p configs/tsconfig.mjs.json && tsc -p configs/tsconfig.dts.json",
+    "build:ts": "tsc -p configs/tsconfig.cjs.json && tsc -p configs/tsconfig.mjs.json",
     "build": "rm -rf dist && npm run build:ts && echo '{ \"type\": \"commonjs\" }' >> dist/cjs/package.json",
     "test": "jest",
     "typedoc": "typedoc src/index.ts && touch docs/.nojekyll",
